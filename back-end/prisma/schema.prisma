@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql" // Ou outro banco de dados de sua preferência
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -12,25 +12,24 @@ model Usuario {
   username  String  @unique
   loginCode String
 
-  respostas Resposta[]
+  guiasDeResolucao GuiaDeResolucao[]  // Relacionamento com os guias de resolução
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
 
-model Resposta {
+model GuiaDeResolucao {
   id          String    @id @default(cuid())
-  titulo      String
-  descricao   String?
-  causa       String?
-  resposta    String?
-  passos      String?
+  titulo      String    // Título do guia de resolução
+  descricao   String   // Descrição do problema 
+  causa       String   // Causa provável do erro
+  resposta    String   // Resposta padrão a ser dada pelo atendente
+  passos      String   // Passos a serem seguidos para resolver o problema
 
   usuario_id  Int
   categoria_id  String
-
   usuario     Usuario @relation(fields: [usuario_id], references: [id])
-  categoria     Categoria @relation(fields: [categoria_id], references: [id])
+  categoria   Categoria @relation(fields: [categoria_id], references: [id])
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -38,30 +37,13 @@ model Resposta {
 }
 
 model Categoria {
-  id    String        @id @default(cuid())
-  nome  TipoCategoria
-  respostas Resposta[]
+  id    String        @id @default(cuid()) 
+  nome  TipoCategoria 
+  guiasDeResolucao GuiaDeResolucao[] 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
-}
-
-model Pergunta {
-  id        String    @id @default(cuid())
-  titulo    String
-  conteudo  String?
-  status    StatusPergunta
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
-}
-
-enum StatusPergunta {
-    Pendente
-    Respondida
-    Encerrada
 }
 
 enum TipoCategoria {
