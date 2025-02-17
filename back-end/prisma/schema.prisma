@@ -1,0 +1,74 @@
+datasource db {
+  provider = "postgresql" // Ou outro banco de dados de sua preferência
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Usuario {
+  id        Int     @id @default(autoincrement())
+  username  String  @unique
+  loginCode String
+
+  respostas Resposta[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+model Resposta {
+  id          String    @id @default(cuid())
+  titulo      String
+  descricao   String?
+  causa       String?
+  resposta    String?
+  passos      String?
+
+  usuario_id  Int
+  categoria_id  String
+
+  usuario     Usuario @relation(fields: [usuario_id], references: [id])
+  categoria     Categoria @relation(fields: [categoria_id], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+}
+
+model Categoria {
+  id    String        @id @default(cuid())
+  nome  TipoCategoria
+  respostas Resposta[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+model Pergunta {
+  id        String    @id @default(cuid())
+  titulo    String
+  conteudo  String?
+  status    StatusPergunta
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+enum StatusPergunta {
+    Pendente
+    Respondida
+    Encerrada
+}
+
+enum TipoCategoria {
+  InstrucoesDeUso
+  ErrosComuns
+  ConfiguracaoEAcesso
+  Solicitacoes
+  DuvidasGerais
+  ChamadosRecentes
+}
