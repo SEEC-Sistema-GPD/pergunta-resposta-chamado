@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -10,20 +10,14 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": true,    
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "paths": {
-      "@domain/*": [
-        "./domain/*"
-      ],
-      "@controllers/*": [
-        "./presentation/controllers/*"
-      ],
-      "@infra/*": [
-        "./infra/*"
-      ]
+      "@domain/*": ["./domain/*"],
+      "@controllers/*": ["./presentation/controllers/*"],
+      "@infra/*": ["./infra/*"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
