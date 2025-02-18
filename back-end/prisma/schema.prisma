@@ -1,56 +1,52 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-model Usuario {
-  id        Int     @id @default(autoincrement())
-  username  String  @unique
-  loginCode String
-
-  guiasDeResolucao GuiaDeResolucao[]  // Relacionamento com os guias de resolução
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
+datasource db {
+  provider = "sqlite"
+  url      = "file:../chamados_respostas.db"
 }
 
-model GuiaDeResolucao {
-  id          String    @id @default(cuid())
-  titulo      String    // Título do guia de resolução
-  descricao   String   // Descrição do problema 
-  causa       String   // Causa provável do erro
-  resposta    String   // Resposta padrão a ser dada pelo atendente
-  passos      String   // Passos a serem seguidos para resolver o problema
-
-  usuario_id  Int
-  categoria_id  String
-  usuario     Usuario @relation(fields: [usuario_id], references: [id])
-  categoria   Categoria @relation(fields: [categoria_id], references: [id])
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
+model categorias {
+  id        String      @id
+  nome      String      @unique(map: "sqlite_autoindex_categorias_1")
+  respostas respostas[]
 }
 
-model Categoria {
-  id    String        @id @default(cuid()) 
-  nome  TipoCategoria 
-  guiasDeResolucao GuiaDeResolucao[] 
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
+model deleted_records {
+  id            String    @id
+  categoria_id  String?
+  titulo        String?
+  descricao     String?
+  causa         String?
+  resposta      String?
+  passos        String?
+  data_exclusao DateTime? @default(now())
 }
 
-enum TipoCategoria {
-  InstrucoesDeUso
-  ErrosComuns
-  ConfiguracaoEAcesso
-  Solicitacoes
-  DuvidasGerais
-  ChamadosRecentes
+model logs {
+  id            Int       @id @default(autoincrement())
+  operacao      String?
+  resposta_id   String?
+  usuario       String?
+  data_operacao DateTime? @default(now())
+  descricao     String?
+}
+
+model respostas {
+  id           String      @id
+  categoria_id String?
+  titulo       String
+  descricao    String?
+  causa        String?
+  resposta     String?
+  passos       String?
+  data_criacao DateTime?   @default(now())
+  categorias   categorias? @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model usuarios {
+  id         Int    @id @default(autoincrement())
+  username   String @unique(map: "sqlite_autoindex_usuarios_1")
+  login_code String
 }
