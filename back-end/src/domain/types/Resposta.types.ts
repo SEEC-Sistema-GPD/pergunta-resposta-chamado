@@ -1,13 +1,10 @@
 export type Resposta = {
     id: string;
+    categoria_id: string | null;
     titulo: string;
-    descricao?: string;
-    causa?: string;
-    resposta?: string;
-    passos?: string;
-    usuario_id: number;
-    categoria_id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt?: Date;
+    descricao: string | null;
+    causa: string | null;
+    resposta: string | null;
+    passos: string | null;
+    data_criacao: Date | null;
 };

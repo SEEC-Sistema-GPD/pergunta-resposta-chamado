@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.chamados_respostas.db
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and
