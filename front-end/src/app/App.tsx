@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AccordionContent, AccordionItem, AccordionRoot, AccordionTrigger } from './components/Accordion'
 import { Header } from './components/Header'
-import { duvidas } from './assets/mocks'
 import RespostaService from './services/RespostaService'
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -84,9 +83,7 @@ function App() {
             </AccordionRoot>
           ))}
         </div>
-
       </div>
-
 
       <div className='absolute w-screen bottom-0 bg-[#3D4A7B] text-white text-center p-3'>
         Grupo DEV - Grupo de Processamento de Dados

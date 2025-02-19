@@ -1,5 +1,5 @@
-import AxiosAdapter from "../infra/AxiosAdapter";
-import IHttpClient from "../infra/IHttpClient";
+import AxiosAdapter from "../../infra/AxiosAdapter";
+import IHttpClient from "../../infra/IHttpClient";
 
 export default class RespostaService {
     httpCliente: IHttpClient;
