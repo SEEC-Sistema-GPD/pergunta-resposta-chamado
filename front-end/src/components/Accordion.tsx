@@ -12,7 +12,8 @@ export const AccordionRoot = ({ children }: any) => {
 export const AccordionItem = ({ children, value }: { children: any, value: string }) => {
     return (
         <Accordion.Item
-            className="border-b shadow-sm w-3xl px-4 justify-between bg-white rounded-md  hover:bg-gray-50"
+            className="border-b shadow-sm 
+            md:w-3xl px-4 justify-between bg-white rounded-md  hover:bg-gray-50"
             value={value}
         >
             {children}

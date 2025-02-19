@@ -12,7 +12,7 @@ class App {
 
   middlewares() {
     app.use(cors({
-      origin: ['http://localhost:8080'],
+      origin: ['http://localhost:5173'],
     }));
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
