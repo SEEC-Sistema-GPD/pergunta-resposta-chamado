@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:/mnt/s/DEV/ATENDIMENTO/chamados_respostas.db"
+  url      = "file:../chamados_respostas.db"
 }
 
 model categorias {
