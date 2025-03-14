@@ -40,7 +40,7 @@ export function CadastrarNovaResposta() {
                     onSubmit={handleSubmit}
                     className="bg-white p-4 rounded-lg shadow-md w-[450px] text-center flex flex-col gap-3"
                 >
-                    <h2 className="text-2xl font-bold text-[#3D4A7B]">Cadastrar Pergunta-Resposta</h2>
+                    <h2 className="text-2xl font-bold text-[#3D4A7B]">Cadastrar Nova Resposta</h2>
 
                     <input
                         type="text"

@@ -11,7 +11,7 @@ export function HomeAdmin() {
         <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
             <Header />
 
-            <div className="flex flex-1 items-center justify-center gap-6 flex-wrap">
+            <div className="flex m-[12%] items-center justify-center gap-6 flex-wrap">
                 {/* Card - Cadastrar Nova Resposta */}
                 <div
                     className="bg-white p-6 rounded-lg shadow-md w-80 text-center cursor-pointer hover:shadow-lg transition flex flex-col items-center"

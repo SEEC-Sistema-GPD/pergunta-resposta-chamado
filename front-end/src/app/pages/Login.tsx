@@ -15,7 +15,7 @@ export function Login() {
 
             <Header />
 
-            <div className="flex flex-1 items-center justify-center">
+            <div className="flex m-[10%] items-center justify-center">
                 <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
                     <h1 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h1>
                     <input
