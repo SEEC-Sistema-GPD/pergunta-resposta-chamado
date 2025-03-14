@@ -1,10 +1,13 @@
-import { Resposta } from "../../domain/types/Resposta.types.ts";
+import { Resposta, RespostaRequestDTO } from "../../domain/types/Resposta.types.ts";
 import { prisma } from "../../infra/database/prisma.ts";
 
 export class RespostasRepository {
 
   async findAll(): Promise<Resposta[]> {
     const resposta = await prisma.respostas.findMany({
+      where: {
+        deletedAt: null,
+      },
       include: {
         categorias: {
           select: {
@@ -14,11 +17,10 @@ export class RespostasRepository {
         },
       },
     });
-
     return resposta;
   }
 
-  async findById(id: string): Promise<Resposta | null> {
+  async findById(id: number): Promise<Resposta | null> {
     const resposta = await prisma.respostas.findUnique({
       where: {
         id: id,
@@ -36,7 +38,7 @@ export class RespostasRepository {
     return resposta;
   }
 
-  async findByCategoria(categoria_id: string): Promise<Resposta[] | null> {
+  async findByCategoria(categoria_id: number): Promise<Resposta[] | null> {
     const respostas = await prisma.respostas.findMany({
       where: {
         categoria_id: categoria_id,
@@ -52,5 +54,20 @@ export class RespostasRepository {
     });
 
     return respostas;
+  }
+
+  async create(dto: RespostaRequestDTO): Promise<Resposta | null> {
+    console.log(dto);
+    const resposta = await prisma.respostas.create({
+      data: {
+        titulo: dto.titulo,
+        descricao: dto.descricao,
+        causa: dto.causa,
+        resposta: dto.resposta,
+        passos: dto.passos,
+        categoria_id: dto.categoria_id,        
+      },
+    });
+    return resposta;
   }
 }

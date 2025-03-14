@@ -1,0 +1,72 @@
+import { Categoria, CategoriaRequestDTO } from "../../domain/types/Categoria.type.ts";
+import { CategoriasRepository } from "../repositories/CategoriasRepository.ts";
+
+export class CategoriasService {
+
+    private CategoriasRepository: CategoriasRepository;
+
+    constructor() {
+        this.CategoriasRepository = new CategoriasRepository();
+    }
+
+    async findAll() {
+        const categorias = await this.CategoriasRepository.findAll();
+        if (!categorias) {
+            return { message: "Nenhuma categoria encontrada" };
+        } else {
+            return categorias;
+        }
+    }
+
+    async findById(id: number) {
+        const categoria = await this.CategoriasRepository.findById(id);
+        if (!categoria) {
+            return { message: "Categoria não encontrada" };
+        } else {
+            return categoria;
+        }
+    }
+
+    async create(dto: CategoriaRequestDTO) {
+        try {
+            const categoria = await this.CategoriasRepository.create(dto);
+            if (!categoria) {
+                return { message: "Erro ao criar categoria" };
+            }
+            return categoria;
+        }
+        catch (error) {
+            console.error("Erro ao criar categoria:", error);
+            return { message: "Erro ao criar categoria" };
+        }
+
+    }
+
+    async update(id: number, dto: CategoriaRequestDTO) {
+        try {
+            const categoria = await this.CategoriasRepository.update(id, dto);
+            if (!categoria) {
+                return { message: "Erro ao atualizar categoria" };
+            }
+            return categoria;
+        }
+        catch (error) {
+            console.error("Erro ao atualizar categoria:", error);
+            return { message: "Erro ao atualizar categoria" };
+        }
+    }
+
+    async delete(id: number) {
+        try {
+            const categoria = await this.CategoriasRepository.delete(id);
+            if (!categoria) {
+                return { message: "Erro ao deletar categoria" };
+            }
+            return categoria;
+        }
+        catch (error) {
+            console.error("Erro ao deletar categoria:", error);
+            return { message: "Erro ao deletar categoria" };
+        }
+    }
+}

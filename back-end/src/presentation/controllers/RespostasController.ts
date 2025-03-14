@@ -8,6 +8,9 @@ export class RespostasController {
         this.respostasService = new RespostasService();
 
         this.findAll = this.findAll.bind(this);
+        this.findById = this.findById.bind(this);
+        this.findByCategoria = this.findByCategoria.bind(this);
+        this.create = this.create.bind(this);
     }
 
     async findAll(req: Request, res: Response) {
@@ -17,13 +20,19 @@ export class RespostasController {
 
     async findById(req: Request, res: Response) {
         const { id } = req.params;
-        const resposta = await this.respostasService.findById(id);
+        const resposta = await this.respostasService.findById(Number(id));
         res.status(200).json(resposta);
     }
 
     async findByCategoria(req: Request, res: Response) {
         const { categoria_id } = req.params;
-        const resposta = await this.respostasService.findByCategoria(categoria_id);
+        const resposta = await this.respostasService.findByCategoria(Number(categoria_id));
         res.status(200).json(resposta);
+    }
+
+    async create(req: Request, res: Response) {
+        console.log(req);
+        const resposta = await this.respostasService.create(req.body);
+        res.status(201).json(resposta);
     }
 }
