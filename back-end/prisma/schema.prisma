@@ -3,25 +3,18 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:/mnt/s/DEV/ATENDIMENTO/chamados_respostas.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model categorias {
-  id        String      @id
-  nome      String      @unique(map: "sqlite_autoindex_categorias_1")
+  id        Int         @id @unique @default(autoincrement())
+  nome      String      @unique
   respostas respostas[]
-}
 
-model deleted_records {
-  id            String    @id
-  categoria_id  String?
-  titulo        String?
-  descricao     String?
-  causa         String?
-  resposta      String?
-  passos        String?
-  data_exclusao DateTime? @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model logs {
@@ -34,19 +27,26 @@ model logs {
 }
 
 model respostas {
-  id           String      @id
-  categoria_id String?
+  id           Int     @id @unique @default(autoincrement())
   titulo       String
-  descricao    String?
-  causa        String?
-  resposta     String?
-  passos       String?
-  data_criacao DateTime?   @default(now())
-  categorias   categorias? @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  descricao    String
+  causa        String
+  resposta     String
+  passos       String
+  // recorrente   Boolean
+  categoria_id Int
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  deletedAt  DateTime?
+  categorias categorias? @relation(fields: [categoria_id], references: [id])
 }
 
 model usuarios {
-  id         Int    @id @default(autoincrement())
-  username   String @unique(map: "sqlite_autoindex_usuarios_1")
-  login_code String
+  id  Int    @id @default(autoincrement())
+  cpf String @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }

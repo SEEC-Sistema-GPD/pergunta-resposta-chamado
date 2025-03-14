@@ -1,10 +1,23 @@
 export type Resposta = {
-    id: string;
-    categoria_id: string | null;
+    id: number;
     titulo: string;
-    descricao: string | null;
-    causa: string | null;
-    resposta: string | null;
-    passos: string | null;
-    data_criacao: Date | null;
+    descricao: string;
+    causa: string;
+    resposta: string;
+    passos: string;
+    categoria_id: number;
+    // recorrente: boolean;
+    
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
+};
+
+export type RespostaRequestDTO = {
+    titulo: string;
+    descricao: string;
+    causa: string;
+    resposta: string;
+    passos: string;
+    categoria_id: number;
 };

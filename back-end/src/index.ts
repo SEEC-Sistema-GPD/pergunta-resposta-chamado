@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import RespostasRoutes from './presentation/routes/RespostasRoutes.js';
+import CategoriaRoutes from './presentation/routes/CategoriasRoutes.ts';
+import AuthRoutes from './presentation/routes/AuthRoutes.ts';
 
 const app = express();
 
@@ -19,8 +21,9 @@ class App {
   }
 
   routes() {
-    console.log('Routes');
-    app.use('/api/respostas', RespostasRoutes);
+    app.use('/api/respostas', RespostasRoutes);    
+    app.use('/api/categoria', CategoriaRoutes);
+    app.use('/api/auth', AuthRoutes);
   }
 
 
