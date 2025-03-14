@@ -3,13 +3,17 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { FaTrash, FaPlus } from "react-icons/fa";
 import { BsPencilSquare } from "react-icons/bs";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 export function GerenciarCategorias() {
-    const categorias = [
+    const [categorias, setCategorias] = useState([
         { id: "1", nome: "Configuração e Acesso" },
         { id: "2", nome: "Dúvidas Gerais" },
         { id: "3", nome: "Erros Comuns" }
-    ];
+    ]);
 
     const [modalAberto, setModalAberto] = useState(false);
     const [novaCategoria, setNovaCategoria] = useState("");
@@ -18,6 +22,20 @@ export function GerenciarCategorias() {
     const fecharModal = () => {
         setModalAberto(false);
         setNovaCategoria("");
+    };
+
+    const confirmarRemocao = (id: string) => {
+        MySwal.fire({
+            title: "Tem certeza?",
+            text: "Você não poderá reverter essa ação!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sim, excluir!",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+        });
     };
 
     return (
@@ -33,7 +51,12 @@ export function GerenciarCategorias() {
                                     {categoria.nome}
                                     <div>
                                         <button className="p-1 cursor-pointer"><BsPencilSquare size={18} /></button>
-                                        <button className="p-1 cursor-pointer"><FaTrash size={18} color="#df0000" /></button>
+                                        <button 
+                                            className="p-1 cursor-pointer"
+                                            onClick={() => confirmarRemocao(categoria.id)}
+                                        >
+                                            <FaTrash size={18} color="#df0000" />
+                                        </button>
                                     </div>
                                 </li>
                             ))}
@@ -56,13 +79,13 @@ export function GerenciarCategorias() {
                     <input 
                         type="text" 
                         className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]" 
-                        placeholder="Digite o nome da categoria" 
+                        placeholder="Nome da categoria" 
                         value={novaCategoria}
                         onChange={(e) => setNovaCategoria(e.target.value)}
                     />
                     <div className="flex justify-end gap-2">
-                        <button className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModal}>Cancelar</button>
-                        <button className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">Adicionar</button>
+                        <button className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModal}>Cancelar</button>
+                        <button className="px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">Adicionar</button>
                     </div>
                 </div>
             )}
