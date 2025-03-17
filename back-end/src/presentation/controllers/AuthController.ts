@@ -3,7 +3,6 @@ import ldap from "ldapjs";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import { v4 as uuidv4 } from "uuid"; // Para gerar sessionId
 
 dotenv.config();
 
@@ -11,9 +10,8 @@ const prisma = new PrismaClient();
 
 export class AuthController {
   async auth(req: Request, res: Response) {
-    const { username: cpf, password } = req.body; // Renomeando para cpf
-    console.log("Authenticating user:", req.body);
-    const ldapUsername = `${cpf}@EDUC.GOVRN`; // Usando CPF como username
+    const { cpf: cpf, password: password } = req.body;
+    const ldapUsername = `${cpf}@EDUC.GOVRN`;
 
     const client = ldap.createClient({
       url: process.env.LDAP_URL!,
@@ -31,15 +29,13 @@ export class AuthController {
           client.unbind();
           return res.status(500).send("Falha na conexão com o serviço LDAP");
         } else {
-          console.log("LDAP service bind successful");
-
+          console.log("LDAP service bind successful (bind)");
           const searchFilter = process.env.LDAP_SEARCH_FILTER!.replace(
             "{{cpf}}",
             cpf
           );
           console.log("Search filter:", searchFilter);
-          // Substituindo pelo CPF
-          const searchOptions = {
+          const searchOptions: ldap.SearchOptions = {
             filter: searchFilter,
             scope: "sub",
             attributes: ["dn", "displayName", "mail"], // Inclua 'mail' ou outro atributo único se necessário
@@ -79,18 +75,6 @@ export class AuthController {
                   return res.status(401).send("Usuário não registrado no sistema.");
                 }
 
-                // Encerrar sessão anterior se o usuário estiver logado
-                //   if (user.logado) {
-                //     // Limpar o sessionId anterior
-                //     await prisma.user.update({
-                //       where: { id: user.id },
-                //       data: { logado: false, sessionId: null },
-                //     });
-                //     console.log(
-                //       `Sessão anterior encerrada para o usuário CPF: ${cpf}`
-                //     );
-                //   }
-
                 // Verificando as credenciais no LDAP
                 client.bind(ldapUsername, password, async (bindErr) => {
                   if (bindErr) {
@@ -98,19 +82,15 @@ export class AuthController {
                     client.unbind();
                     return res.status(401).send("Credenciais inválidas");
                   } else {
-                    console.log("LDAP user bind successful");
+                    console.log("LDAP user bind successful (auth)");
                     client.unbind();
 
-                    // Gerar um sessionId único
-                    // const sessionId = uuidv4();
-
-                    // Gerar o JWT com sessionId
-                    // const token = jwt.sign(
-                    //   // { id: user.id, role: user.role, sessionId }, // Payload
-                    //   { id: user.id }, // Payload
-                    //   process.env.JWT_SECRET!, // Chave secreta
-                    //   { expiresIn: "1h" } // Tempo de expiração
-                    // );
+                    // Gerar o JWT
+                    const token = jwt.sign(
+                      { id: user.id, cpf: user.cpf },  // Payload: informações que você quer embutir
+                      process.env.JWT_SECRET!,         // Chave secreta para assinar o token
+                      { expiresIn: '1h' }              // Tempo de expiração do token
+                    );
 
                     // Atualizar o status do usuário no banco de dados
                     // await prisma.usuarios.update({
@@ -118,15 +98,21 @@ export class AuthController {
                     //   data: { logado: true, sessionId },
                     // });
 
+                    console.log("displayName gerado:", displayName);
                     // Enviar o token e o nome do usuário na resposta
                     return res
                       .status(200)
                       .json({
-                        message: "Autenticado",
-                        // token,
+                        message: "Autenticado via LDAP",
+                        token,
                         displayName,
-                        // sessionId,
                       });
+
+                    // Opcional: Armazene o token em um cookie (httpOnly para segurança):
+                    // res.cookie("token", token, {
+                    //   httpOnly: true,
+                    //   maxAge: 3600000, // 1 hora em milissegundos
+                    // });
                   }
                 });
               });
