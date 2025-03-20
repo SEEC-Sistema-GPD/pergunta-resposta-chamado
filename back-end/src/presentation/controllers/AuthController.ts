@@ -3,12 +3,20 @@ import ldap from "ldapjs";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
+import { UsuariosService } from "../services/UsuariosService.ts";
 
 dotenv.config();
 
 const prisma = new PrismaClient();
 
 export class AuthController {
+  private usuarioService: UsuariosService;
+
+  constructor() {
+    this.usuarioService = new UsuariosService();
+    this.auth = this.auth.bind(this);
+  }
+
   async auth(req: Request, res: Response) {
     const { cpf: cpf, password: password } = req.body;
     const ldapUsername = `${cpf}@EDUC.GOVRN`;
@@ -54,6 +62,7 @@ export class AuthController {
 
               let userFound = false;
               let displayName = cpf; // Valor default caso não encontre no LDAP
+              let user;
 
               search.on("searchEntry", async (entry) => {
                 console.log("User found:", entry.dn.toString());
@@ -67,12 +76,12 @@ export class AuthController {
                     ?.values[0] || `${cpf}@educ.govrn`;
 
                 // Verificar se o usuário existe na tabela User usando CPF
-                console.log("Verificando se o usuário existe no banco de dados...");
-                const user = await prisma.usuarios.findUnique({ where: { cpf } });
+                user = await this.usuarioService.findByCpf(cpf);
 
                 if (!user) {
-                  client.unbind();
-                  return res.status(401).send("Usuário não registrado no sistema.");
+                  console.log("Usuário não encontrado no banco de dados. Criando...");
+                  user = await this.usuarioService.create(cpf, displayName);
+                  console.log("Usuário criado com sucesso:", user);
                 }
 
                 // Verificando as credenciais no LDAP
@@ -87,18 +96,11 @@ export class AuthController {
 
                     // Gerar o JWT
                     const token = jwt.sign(
-                      { id: user.id, cpf: user.cpf },  // Payload: informações que você quer embutir
+                      { id: user!.id, cpf: user!.cpf },  // Payload: informações que você quer embutir
                       process.env.JWT_SECRET!,         // Chave secreta para assinar o token
                       { expiresIn: '1h' }              // Tempo de expiração do token
                     );
 
-                    // Atualizar o status do usuário no banco de dados
-                    // await prisma.usuarios.update({
-                    //   where: { id: user.id },
-                    //   data: { logado: true, sessionId },
-                    // });
-
-                    console.log("displayName gerado:", displayName);
                     // Enviar o token e o nome do usuário na resposta
                     return res
                       .status(200)
@@ -107,12 +109,6 @@ export class AuthController {
                         token,
                         displayName,
                       });
-
-                    // Opcional: Armazene o token em um cookie (httpOnly para segurança):
-                    // res.cookie("token", token, {
-                    //   httpOnly: true,
-                    //   maxAge: 3600000, // 1 hora em milissegundos
-                    // });
                   }
                 });
               });
