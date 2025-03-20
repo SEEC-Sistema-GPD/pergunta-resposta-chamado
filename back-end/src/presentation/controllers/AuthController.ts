@@ -71,15 +71,13 @@ export class AuthController {
                 displayName =
                   entry.attributes.find((attr) => attr.type === "displayName")
                     ?.values[0] || cpf;
-                const email =
-                  entry.attributes.find((attr) => attr.type === "mail")
-                    ?.values[0] || `${cpf}@educ.govrn`;
+                // const email =
+                //   entry.attributes.find((attr) => attr.type === "mail")
+                //     ?.values[0] || `${cpf}@educ.govrn`;
 
-                // Verificar se o usuário existe na tabela User usando CPF
+                // Verificar existencia do usuário por CPF, caso não exista, criar o usuário
                 user = await this.usuarioService.findByCpf(cpf);
-
                 if (!user) {
-                  console.log("Usuário não encontrado no banco de dados. Criando...");
                   user = await this.usuarioService.create(cpf, displayName);
                   console.log("Usuário criado com sucesso:", user);
                 }
@@ -97,7 +95,7 @@ export class AuthController {
                     // Gerar o JWT
                     const token = jwt.sign(
                       { id: user!.id, cpf: user!.cpf },  // Payload: informações que você quer embutir
-                      process.env.JWT_SECRET!,         // Chave secreta para assinar o token
+                      process.env.JWT_SECRET!,          // Chave secreta para assinar o token
                       { expiresIn: '1h' }              // Tempo de expiração do token
                     );
 
