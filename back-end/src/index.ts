@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import RespostasRoutes from './presentation/routes/RespostasRoutes.js';
 import CategoriaRoutes from './presentation/routes/CategoriasRoutes.ts';
+import UsuarioRoutes from './presentation/routes/UsuariosRoutes.ts';
 import AuthRoutes from './presentation/routes/AuthRoutes.ts';
 
 const app = express();
@@ -23,6 +24,7 @@ class App {
   routes() {
     app.use('/api/respostas', RespostasRoutes);    
     app.use('/api/categoria', CategoriaRoutes);
+    app.use('/api/usuario', UsuarioRoutes);
     app.use('/api/auth', AuthRoutes);
   }
 
