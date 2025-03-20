@@ -24,13 +24,13 @@ export class CategoriasRepository {
 
   async create(dto: CategoriaRequestDTO): Promise<Categoria | null> {
     const categoria = await prisma.categorias.create({
-      data: {
-        nome: dto.nome,
-      },
+        data: {
+            nome: dto.nome,
+        }
     });
 
     return categoria;
-  }
+}
 
   async update(id: number, dto: CategoriaRequestDTO): Promise<Categoria | null> {
     const categoria = await prisma.categorias.update({

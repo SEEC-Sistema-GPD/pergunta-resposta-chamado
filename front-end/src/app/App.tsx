@@ -4,6 +4,7 @@ import { VisualizarRespostaChamado } from "./pages/VisualizarRespostaChamado";
 import { CadastrarNovaResposta } from "./pages/CadastrarNovaResposta";
 import { HomeAdmin } from "./pages/HomeAdmin";
 import { GerenciarCategorias } from "./pages/GerenciarCategorias";
+import { GerenciarUsuarios } from "./pages/GerenciarUsuarios";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/home-admin" element={<HomeAdmin />} />
         <Route path="/cadastrar-nova-resposta" element={<CadastrarNovaResposta />} />
         <Route path="/gerenciar-categorias" element={<GerenciarCategorias />} />
+        <Route path="/gerenciar-usuarios" element={<GerenciarUsuarios />} />
       </Routes>
     </Router>
   );

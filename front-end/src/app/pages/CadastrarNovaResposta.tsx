@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 
@@ -7,28 +8,71 @@ export function CadastrarNovaResposta() {
         titulo: "",
         descricao: "",
         causa: "",
-        categoria: "",
+        categoria_id: "",
         resposta: "",
         passos: "",
     });
 
+    const [categorias, setCategorias] = useState<{ id: number; nome: string }[]>([]);
+
+    useEffect(() => {
+        async function fetchCategorias() {
+            try {
+                const response = await fetch("http://localhost:3000/api/categoria"); 
+                const data = await response.json();
+                setCategorias(data);
+            } catch (error) {
+                console.error("Erro ao buscar categorias:", error);
+            }
+        }
+        fetchCategorias();
+    }, []);
+
     function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
         const { name, value } = event.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value }));
+        setFormData((prevData) => ({ ...prevData, [name]: name === "categoria_id" ? Number(value) : value }));
     }
 
-    function handleSubmit(event: React.FormEvent) {
+    async function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
-        console.log("Dados enviados:", formData);
-        alert("Pergunta cadastrada com sucesso!");
-        setFormData({
-            titulo: "",
-            descricao: "",
-            causa: "",
-            categoria: "",
-            resposta: "",
-            passos: "",
+
+        const confirmResult = await Swal.fire({
+            title: "Tem certeza disso?",
+            text: "Deseja realmente cadastrar essa nova resposta?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Cadastrar",
+            cancelButtonText: "Cancelar",
         });
+
+        if (!confirmResult.isConfirmed) return;
+
+        try {
+            const response = await fetch("http://localhost:3000/api/respostas", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                await Swal.fire("Sucesso!", "Resposta cadastrada com sucesso!", "success");
+                setFormData({
+                    titulo: "",
+                    descricao: "",
+                    causa: "",
+                    categoria_id: "",
+                    resposta: "",
+                    passos: "",
+                });
+            } else {
+                throw new Error("Erro ao cadastrar resposta");
+            }
+        } catch (error) {
+            console.error("Erro ao cadastrar resposta:", error);
+            Swal.fire("Erro!", "Ocorreu um erro ao cadastrar a resposta.", "error");
+        }
     }
 
     return (
@@ -38,7 +82,7 @@ export function CadastrarNovaResposta() {
             <div className="flex flex-1 items-center justify-center">
                 <form
                     onSubmit={handleSubmit}
-                    className="bg-white p-4 rounded-lg shadow-md w-[450px] text-center flex flex-col gap-3"
+                    className="bg-white p-4 rounded-lg shadow-md w-[50%] text-center flex flex-col gap-3"
                 >
                     <h2 className="text-2xl font-bold text-[#3D4A7B]">Cadastrar Nova Resposta</h2>
 
@@ -53,16 +97,17 @@ export function CadastrarNovaResposta() {
                     />
 
                     <select
-                        name="categoria"
-                        value={formData.categoria}
+                        name="categoria_id"
+                        value={formData.categoria_id}
                         onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 ${formData.categoria_id ? "text-black" : "text-gray-500"
+                            }`}
                         required
                     >
-                        <option value="" className="text-gray-400">Selecione uma categoria</option>
-                        <option value="Dúvidas Gerais" className="text-black">Dúvidas Gerais</option>
-                        <option value="Erros Comuns" className="text-black">Erros Comuns</option>
-                        <option value="Configuração e Acesso" className="text-black">Configuração e Acesso</option>
+                        <option value="" disabled hidden>Selecione uma categoria</option>
+                        {categorias.map((categoria) => (
+                            <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
+                        ))}
                     </select>
 
                     <input
@@ -71,7 +116,7 @@ export function CadastrarNovaResposta() {
                         placeholder="Descrição do problema"
                         value={formData.descricao}
                         onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded h-20 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         required
                     />
 
@@ -81,7 +126,7 @@ export function CadastrarNovaResposta() {
                         placeholder="Causa do problema"
                         value={formData.causa}
                         onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded h-20 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         required
                     />
 
@@ -91,7 +136,7 @@ export function CadastrarNovaResposta() {
                         placeholder="Resposta padrão"
                         value={formData.resposta}
                         onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded h-20 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         required
                     />
 
@@ -101,7 +146,7 @@ export function CadastrarNovaResposta() {
                         placeholder="Passos para resolução"
                         value={formData.passos}
                         onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded h-20 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         required
                     />
 

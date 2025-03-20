@@ -1,3 +1,5 @@
+export type { Categoria, Resposta };
+
 type Categoria = {
     id: string;
     nome: string;
@@ -11,8 +13,6 @@ type Resposta = {
     causa: string;
     resposta: string;
     passos: string;
-    data_criacao: string; 
+    createdAt: string;
     categorias: Categoria;
 }
-
-export type { Categoria, Resposta };

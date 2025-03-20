@@ -30,6 +30,18 @@ export class RespostasController {
         res.status(200).json(resposta);
     }
 
+    async findByTitulo(req: Request, res: Response) {
+        const { titulo } = req.params;
+        const resposta = await this.respostasService.findByTitulo(String(titulo));
+        res.status(200).json(resposta);
+    }
+
+    async findByTituloECategoria(req: Request, res: Response) {
+        const { titulo, categoria_id } = req.params;
+        const resposta = await this.respostasService.findByTituloECategoria(titulo, parseInt(categoria_id));
+        res.status(200).json(resposta);
+    }
+
     async create(req: Request, res: Response) {
         console.log(req);
         const resposta = await this.respostasService.create(req.body);

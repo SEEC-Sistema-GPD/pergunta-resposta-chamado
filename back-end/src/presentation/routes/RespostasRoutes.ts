@@ -11,6 +11,10 @@ router.get('/:id', authenticateToken, async (req, res) => respostasController.fi
 
 router.get('/categoria/:categoria_id', authenticateToken,  async (req, res) => respostasController.findByCategoria(req, res));
 
-router.post('/', authenticateToken, async (req, res) => respostasController.create(req, res));
+router.get('/titulo/:titulo', async (req, res) => respostasController.findByTitulo(req, res));
+
+router.get('/titulo/:titulo/categoria/:categoria_id', async (req, res) => respostasController.findByTituloECategoria(req, res));
+
+router.post('/', async (req, res) => respostasController.create(req, res));
 
 export default router;
