@@ -42,8 +42,8 @@ model respostas {
 model usuarios {
   id        Int       @id @default(autoincrement())
   cpf       String    @unique  
-  nome      String    @unique
-  super     Boolean   @default(false)
+  nome      String    
+  super     Boolean   @default(false) 
   
   createdAt DateTime  @default(now())
   deletedAt DateTime?
