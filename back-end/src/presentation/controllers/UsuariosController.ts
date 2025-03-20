@@ -8,6 +8,8 @@ export class UsuarioController {
         this.usuarioService = new UsuariosService();
 
         this.findAll = this.findAll.bind(this);
+        this.findById = this.findById.bind(this);
+        this.atualizarPermissao = this.atualizarPermissao.bind(this);
     }
 
     async findAll(req: Request, res: Response) {

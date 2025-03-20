@@ -27,6 +27,11 @@ export class UsuariosService {
         }
     }
 
+    async findByCpf(cpf: string) {
+        const usuario = await this.UsuariosRepository.findByCpf(cpf);
+        return usuario;
+    }
+
     async atualizarPermissao(id: number, dto: UsuarioRequestDTO) {
         try {
             let valorBooleano: boolean;
@@ -52,5 +57,13 @@ export class UsuariosService {
             console.error("Erro ao atualizar permissão do usuário:", error);
             return { message: "Erro ao atualizar permissão do usuário" };
         }
+    }
+
+    async create(cpf: string, nome: string) {
+        const usuario = await this.UsuariosRepository.create(cpf, nome);
+        if (!usuario) {
+            return { message: "Erro ao criar usuário" };
+        }
+        return usuario;
     }
 }

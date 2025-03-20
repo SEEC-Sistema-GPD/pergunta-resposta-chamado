@@ -18,7 +18,6 @@ export class UsuariosRepository {
         id: id,
       },
     });
-
     return usuario;
   }
 
@@ -32,6 +31,25 @@ export class UsuariosRepository {
         },
       });
   
+      return usuario;
+    }
+
+    async findByCpf(cpf: string): Promise<Usuario | null> {
+      const usuario = await prisma.usuarios.findUnique({
+        where: {
+          cpf: cpf,
+        },
+      });
+      return usuario;
+    }
+
+    async create(cpf: string, nome: string): Promise<Usuario | null> {
+      const usuario = await prisma.usuarios.create({
+        data: {
+          cpf: cpf,
+          nome: nome,          
+        },
+      });
       return usuario;
     }
 }
