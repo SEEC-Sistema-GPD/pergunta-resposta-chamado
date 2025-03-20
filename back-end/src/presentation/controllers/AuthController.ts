@@ -94,7 +94,7 @@ export class AuthController {
 
                     // Gerar o JWT
                     const token = jwt.sign(
-                      { id: user!.id, cpf: user!.cpf },  // Payload: informações que você quer embutir
+                      { id: user!.id, cpf: user!.cpf, super: user!.super, },  // Payload: informações que você quer embutir
                       process.env.JWT_SECRET!,          // Chave secreta para assinar o token
                       { expiresIn: '1h' }              // Tempo de expiração do token
                     );

@@ -1,11 +1,11 @@
 export type Usuario = {
     id: number;
-    cpf: string;
+    nome: string;
+    super: boolean;
+    cpf: string;    
     createdAt: Date;  
     updatedAt: Date;
     deletedAt: Date | null;
-    nome: string;
-    super: boolean;
 };
 
 export type UsuarioRequestDTO = {
