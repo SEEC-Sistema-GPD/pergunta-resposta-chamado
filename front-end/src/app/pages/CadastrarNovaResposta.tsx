@@ -18,7 +18,7 @@ export function CadastrarNovaResposta() {
     useEffect(() => {
         async function fetchCategorias() {
             try {
-                const response = await fetch("http://localhost:3000/api/categoria"); 
+                const response = await fetch("http://localhost:3000/api/categoria");
                 const data = await response.json();
                 setCategorias(data);
             } catch (error) {
@@ -152,16 +152,13 @@ export function CadastrarNovaResposta() {
 
                     <button
                         type="submit"
-                        className="w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
+                        className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
                     >
                         Cadastrar
                     </button>
                 </form>
             </div>
-
-            <div className="pt-11">
-                <Footer />
-            </div>
+            <Footer />
         </div>
     );
 }

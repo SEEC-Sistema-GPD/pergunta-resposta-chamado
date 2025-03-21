@@ -70,6 +70,7 @@ export class RespostasRepository {
       where: {
         titulo: {
           contains: titulo,
+          mode: 'insensitive',
         },
         categorias: {
           deletedAt: null,
@@ -88,6 +89,7 @@ export class RespostasRepository {
         where: {
             titulo: {
                 contains: titulo,
+                mode: 'insensitive',
             },
             categoria_id: categoria_id,
             categorias: {

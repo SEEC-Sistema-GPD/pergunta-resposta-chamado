@@ -166,7 +166,7 @@ export function GerenciarCategorias() {
         <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
             <Header />
             <div className="flex items-center justify-center">
-                <div className="p-4 w-[35%]">
+                <div className="p-4 w-[50%]">
                     <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Gerenciar Categorias</div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
                         <ul className="divide-y divide-gray-300">
