@@ -6,7 +6,7 @@ import { BsPencilSquare } from "react-icons/bs";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { Tooltip } from "react-tooltip";
-import "react-tooltip/dist/react-tooltip.css"; 
+import "react-tooltip/dist/react-tooltip.css";
 
 const MySwal = withReactContent(Swal);
 
@@ -163,7 +163,7 @@ export function GerenciarCategorias() {
     };
 
     return (
-        <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
+        <div className="flex flex-col min-w-screen min-h-screen bg-[#c4d2eb77]">
             <Header />
             <div className="flex items-center justify-center">
                 <div className="p-4 w-[50%]">

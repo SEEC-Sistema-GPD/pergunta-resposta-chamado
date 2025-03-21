@@ -91,7 +91,7 @@ export function GerenciarUsuarios() {
     };
 
     return (
-        <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
+        <div className="flex flex-col min-w-screen min-h-screen  bg-[#c4d2eb77]">
             <Header />
             <div className="flex items-center justify-center">
                 <div className="p-4 w-[50%]">

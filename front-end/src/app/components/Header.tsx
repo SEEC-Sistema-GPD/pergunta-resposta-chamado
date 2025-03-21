@@ -1,14 +1,55 @@
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
 export const Header = () => {
+    const navigate = useNavigate();
+
+    function handleLogout() {
+        Swal.fire({
+            title: "Tem certeza que deseja deslogar?",
+            text: "Você será redirecionado para a página inicial.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Deslogar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem("token");
+                Swal.fire({
+                    title: "Deslogando...",
+                    text: "Aguarde enquanto você é redirecionado.",
+                    icon: "info",
+                    timer: 2000,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+                setTimeout(() => navigate("/"), 2000);
+            }
+        });
+    }
+
     return (
-        <header className="w-full h-[15vh] bg-[#3D4A7B] text-white ">
-            <div className="bg-[#3D4A7B] h-[40%] border-b-4 border-[#D99C44] items-center justify-center " >
-                <h1 className="text-sm  md:text-lg w-full h-full px-3 py-2 font-medium">SEEC - SIGEduc - Sistema Integrado de Gestão da Educação</h1>
+        <header className="w-full bg-[#3D4A7B] text-white flex flex-col">
+            <div className="flex justify-between items-center p-2 border-b-4 border-[#D99C44]">
+                <h1 className="text-lg font-medium">
+                    SEEC - SIGEduc - Sistema Integrado de Gestão da Educação
+                </h1>
+                <button
+                    onClick={handleLogout}
+                    className="cursor-pointer text-white font-bold rounded"
+                >
+                    Deslogar
+                </button>
             </div>
-            <div className="h-[60%] bg-[#C4D2EB]">
-                <p className="text-primary p-4">
+
+            <div className="p-2 bg-[#C4D2EB] flex items-center">
+                <p className="text-primary">
                     Perguntas Frequentes para a Equipe de Suporte do SEEC - SIGEduc
                 </p>
             </div>
         </header>
-    )
-}
+    );
+};

@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {jwtDecode, JwtPayload } from "jwt-decode";
-import { Header } from '../components/Header';
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { Footer } from '../components/Footer';
 
 // Defina uma interface estendendo JwtPayload para incluir o atributo "super"
@@ -49,7 +48,19 @@ export function Login() {
 
   return (
     <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
-      <Header />
+      <header className="w-full bg-[#3D4A7B] text-white flex flex-col">
+        <div className="flex justify-between items-center p-2 border-b-4 border-[#D99C44]">
+          <h1 className="text-lg font-medium">
+            SEEC - SIGEduc - Sistema Integrado de Gestão da Educação
+          </h1>
+        </div>
+
+        <div className="p-2 bg-[#C4D2EB] flex items-center">
+          <p className="text-primary">
+            Perguntas Frequentes para a Equipe de Suporte do SEEC - SIGEduc
+          </p>
+        </div>
+      </header>
       <div className="flex m-[10%] items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
           <h1 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h1>
@@ -69,7 +80,7 @@ export function Login() {
           />
           <button
             onClick={handleLogin}
-            className="w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
+            className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
           >
             Entrar
           </button>
