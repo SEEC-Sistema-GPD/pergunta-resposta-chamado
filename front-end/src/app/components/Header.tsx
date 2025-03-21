@@ -17,6 +17,7 @@ export const Header = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 localStorage.removeItem("token");
+
                 Swal.fire({
                     title: "Deslogando...",
                     text: "Aguarde enquanto você é redirecionado.",
@@ -24,10 +25,13 @@ export const Header = () => {
                     timer: 2000,
                     showConfirmButton: false,
                     allowOutsideClick: false,
-                    allowEscapeKey: false
+                    allowEscapeKey: false,
+                    willClose: () => {
+                        navigate("/");
+                    }
                 });
-                setTimeout(() => navigate("/"), 2000);
             }
+
         });
     }
 

@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import Swal from "sweetalert2";
 import { Footer } from '../components/Footer';
 
-// Defina uma interface estendendo JwtPayload para incluir o atributo "super"
+// Interface do token
 interface MyTokenPayload extends JwtPayload {
   super: boolean;
 }
@@ -14,6 +15,15 @@ export function Login() {
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
+    if (!username.trim() || !password.trim()) {
+      Swal.fire({
+        icon: "error",
+        title: "Erro!",
+        text: "Por favor, preencha os campos de usuário e senha.",
+      });
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
@@ -24,25 +34,32 @@ export function Login() {
         })
       });
 
-      console.log(username, password);
-
-      if (!response.ok) {
-        throw new Error("Falha no login");
-      }
-
       const data = await response.json();
       localStorage.setItem("token", data.token);
 
-      // Decodifique o token utilizando a interface MyTokenPayload
       const decodedUser = jwtDecode<MyTokenPayload>(data.token);
 
-      if (decodedUser.super) {
-        navigate("/home-admin");
-      } else {
-        navigate("/visualizar-resposta-chamado");
-      }
+      Swal.fire({
+        icon: "info",
+        title: "Logando...",
+        text: "Aguarde enquanto você é redirecionado.",
+        showConfirmButton: false,
+        timer: 2000,
+        willClose: () => {
+          if (decodedUser.super) {
+            navigate("/home-admin");
+          } else {
+            navigate("/visualizar-resposta-chamado");
+          }
+        }
+      });
+
     } catch (error) {
-      console.error("Erro ao efetuar login:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Erro!",
+        text: "Usuário ou senha incorretos. Verifique suas credenciais e tente novamente.",
+      });
     }
   }
 
@@ -54,16 +71,17 @@ export function Login() {
             SEEC - SIGEduc - Sistema Integrado de Gestão da Educação
           </h1>
         </div>
-
         <div className="p-2 bg-[#C4D2EB] flex items-center">
           <p className="text-primary">
             Perguntas Frequentes para a Equipe de Suporte do SEEC - SIGEduc
           </p>
         </div>
       </header>
+
       <div className="flex m-[10%] items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
           <h1 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h1>
+
           <input
             type="text"
             placeholder="Usuário"
