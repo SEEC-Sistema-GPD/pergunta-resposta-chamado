@@ -1,25 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { TbLogout } from "react-icons/tb";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 export const Header = () => {
     const navigate = useNavigate();
 
     function handleLogout() {
         Swal.fire({
-            title: "Tem certeza que deseja deslogar?",
+            title: "Deseja encerrar sua sessão?",
             text: "Você será redirecionado para a página inicial.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Deslogar",
+            confirmButtonText: "Desconectar",
             cancelButtonText: "Cancelar"
         }).then((result) => {
             if (result.isConfirmed) {
                 localStorage.removeItem("token");
 
                 Swal.fire({
-                    title: "Deslogando...",
+                    title: "Desconectando...",
                     text: "Aguarde enquanto você é redirecionado.",
                     icon: "info",
                     timer: 2000,
@@ -31,7 +34,6 @@ export const Header = () => {
                     }
                 });
             }
-
         });
     }
 
@@ -43,15 +45,17 @@ export const Header = () => {
                 </h1>
                 <button
                     onClick={handleLogout}
-                    className="cursor-pointer text-white font-bold rounded"
+                    className="cursor-pointer text-white font-bold rounded text-2xl"
+                    data-tooltip-id="desconectar"
                 >
-                    Deslogar
+                    <TbLogout />
                 </button>
+                <Tooltip id="desconectar" place="left" content="Desconectar" />
             </div>
 
             <div className="p-2 bg-[#C4D2EB] flex items-center">
                 <p className="text-primary">
-                    Perguntas Frequentes para a Equipe de Suporte do SEEC - SIGEduc
+                    Perguntas Frequentes para a Equipe de Suporte da SEEC - SIGEduc
                 </p>
             </div>
         </header>

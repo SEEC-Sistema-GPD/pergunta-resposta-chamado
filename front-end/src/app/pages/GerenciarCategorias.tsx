@@ -166,13 +166,13 @@ export function GerenciarCategorias() {
         <div className="flex flex-col min-w-screen min-h-screen bg-[#c4d2eb77]">
             <Header />
             <div className="flex items-center justify-center">
-                <div className="p-4 w-[50%]">
+                <div className="p-4 w-full max-w-4xl">
                     <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Gerenciar Categorias</div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
                         <ul className="divide-y divide-gray-300">
                             {categorias.length > 0 ? (
                                 categorias.map((categoria) => (
-                                    <li key={categoria.id} className="flex justify-between p-3 items-center">
+                                    <li key={categoria.id} className="flex flex-col sm:flex-row justify-between gap-2 p-3 items-center">
                                         <span className="font-medium text-gray-800">{categoria.nome}</span>
                                         <div className="flex gap-2">
                                             <button className="p-1 cursor-pointer" onClick={() => abrirModalEdicao(categoria)} data-tooltip-id="editarCategoria">
@@ -207,7 +207,9 @@ export function GerenciarCategorias() {
 
             {/* Modal para Adicionar Categoria */}
             {modalCriacaoAberto && (
-                <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 bg-white p-6 rounded-lg shadow-lg w-[30%] border border-gray-300">
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300">
+              
                     <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Adicionar Categoria</h2>
                     <input
                         type="text"
@@ -226,21 +228,25 @@ export function GerenciarCategorias() {
                         </button>
                     </div>
                 </div>
+                </div>
             )}
 
             {/* Modal para Editar Categoria */}
             {modalEdicaoAberto && (
-                <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 bg-white p-6 rounded-lg shadow-lg w-[30%] border border-gray-300">
-                    <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Editar Categoria</h2>
-                    <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
-                        value={novoNomeCategoria}
-                        onChange={(e) => setNovoNomeCategoria(e.target.value)}
-                    />
-                    <div className="flex justify-end gap-2">
-                        <button className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>Cancelar</button>
-                        <button className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]" onClick={atualizarCategoria}>Salvar</button>
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300">
+
+                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Editar Categoria</h2>
+                        <input
+                            type="text"
+                            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
+                            value={novoNomeCategoria}
+                            onChange={(e) => setNovoNomeCategoria(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-2">
+                            <button className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>Cancelar</button>
+                            <button className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]" onClick={atualizarCategoria}>Salvar</button>
+                        </div>
                     </div>
                 </div>
             )}

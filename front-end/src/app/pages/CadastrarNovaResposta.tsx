@@ -82,7 +82,7 @@ export function CadastrarNovaResposta() {
             <div className="flex flex-1 items-center justify-center">
                 <form
                     onSubmit={handleSubmit}
-                    className="bg-white p-4 rounded-lg shadow-md w-[50%] text-center flex flex-col gap-3"
+                    className="bg-white p-4 rounded-lg shadow-md w-[90%] sm:w-[70%] md:w-[50%] lg:w-[40%] text-center flex flex-col gap-3"
                 >
                     <h2 className="text-2xl font-bold text-[#3D4A7B]">Cadastrar Nova Resposta</h2>
 

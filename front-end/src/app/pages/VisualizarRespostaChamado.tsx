@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react';
-import { AccordionContent, AccordionItem, AccordionRoot, AccordionTrigger } from '../components/Accordion';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import RespostaService from '../services/RespostaService';
 import { parseISO, format, isValid } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Categoria, Resposta } from '../types/respostas.types';
-import { FiltragemPorCategoria } from '../components/Select';
-import { Search } from "lucide-react";
+import { FiltragemPorCategoria } from '../components/FiltragemPorCategoria';
+import { CardRespostas } from '../components/CardRespostas';
+import { BarraDePesquisa } from '../components/BarraDePesquisa';
 
 export function VisualizarRespostaChamado() {
     const [respostas, setRespostas] = useState<Resposta[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [titulo, setTitulo] = useState('');
     const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
     const service = new RespostaService();
 
     useEffect(() => {
@@ -31,7 +33,6 @@ export function VisualizarRespostaChamado() {
             getRespostasByTitulo(titulo);
         }
     }, [titulo, categoriaSelecionada]);
-
 
     async function getRespostas() {
         try {
@@ -62,7 +63,6 @@ export function VisualizarRespostaChamado() {
         }
     }
 
-
     async function getRespostasByCategoria(categoria: string) {
         try {
             const categoria_id = categoria === "Todas" ? null : Number(categoria);
@@ -82,67 +82,49 @@ export function VisualizarRespostaChamado() {
     return (
         <div className='w-screen bg-[#c4d2eb77] h-screen flex flex-col overflow-y-auto space-y-4'>
             <Header />
-            <div className='flex flex-col items-center h-fit p-10 space-y-2'>
+            <div className='flex flex-col items-center'>
 
-                {/* Barra de Pesquisa */}
-                <div className="relative w-full md:w-1/2">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
-                    <input
-                        type="text"
-                        placeholder="Pesquisar por título..."
-                        className="w-full p-2 pl-10 border border-gray-400 rounded-lg focus:outline-none"
-                        value={titulo}
-                        onChange={(e) => setTitulo(e.target.value)}
-                    />
+                <div className="flex flex-col md:flex-row justify-center items-center p-2 gap-4 w-[55%]">
+                    {/* Barra de Pesquisa */}
+                    <div className="w-[60%]">
+                        <BarraDePesquisa
+                            value={titulo}
+                            onChange={setTitulo}
+                            placeholder="Pesquisar por título..."
+                        />
+                    </div>
+
+                    {/* Filtro por Categoria */}
+                    <div className="w-[40%]">
+                        <FiltragemPorCategoria
+                            categorias={categorias}
+                            onChange={getRespostasByCategoria}
+                        />
+                    </div>
                 </div>
 
-                <FiltragemPorCategoria categorias={categorias} onChange={getRespostasByCategoria} />
-                <div className='flex flex-col items-center space-y-2 mb-8'>
+                <div className='flex flex-col items-center space-y-2 p-2 w-[55%]'>
                     {respostas.length > 0 ? (
-                        respostas.map((duvida, index) => {
-                            const dataCriacao = duvida.createdAt ? parseISO(duvida.createdAt) : null;
+                        respostas.map((resposta, index) => {
+                            const isExpanded = expandedIndex === index;
+
+                            const dataCriacao = resposta.createdAt ? parseISO(resposta.createdAt) : null;
                             const dataFormatada = dataCriacao && isValid(dataCriacao)
-                                ? format(dataCriacao, "dd/MM/yyyy", { locale: ptBR })
+                                ? format(dataCriacao, "dd/MM/yyyy HH:mm", { locale: ptBR })
                                 : "Data inválida";
 
+                            const handleToggle = () => {
+                                setExpandedIndex(isExpanded ? null : index);
+                            };
+
                             return (
-                                <AccordionRoot key={index}>
-                                    <AccordionItem value={`item-${index}`}>
-                                        <AccordionTrigger>
-                                            <div className='flex w-full justify-between gap-2'>
-                                                <p className='flex gap-2 items-center justify-center'>
-                                                    {duvida.titulo}
-                                                    {duvida.categorias && (
-                                                        <span className='bg-[#3D4A7B] text-sm text-white px-2 py-1 rounded-md'>
-                                                            {duvida.categorias.nome}
-                                                        </span>
-                                                    )}
-                                                </p>
-                                                <p className='text-gray-500'>{dataFormatada}</p>
-                                            </div>
-                                        </AccordionTrigger>
-                                        <AccordionContent>
-                                            <div className='flex flex-col space-y-2'>
-                                                <div className='flex flex-col'>
-                                                    <p className='font-semibold'>Descrição do problema:</p>
-                                                    <p>{duvida.descricao || "Não informado"}</p>
-                                                </div>
-                                                <div className='flex flex-col'>
-                                                    <p className='font-semibold'>Causa do problema:</p>
-                                                    <p>{duvida.causa || "Não informado"}</p>
-                                                </div>
-                                                <div className='flex flex-col space-y-2'>
-                                                    <p className='font-semibold'>Resposta padrão:</p>
-                                                    <p>{duvida.resposta || "Não informado"}</p>
-                                                </div>
-                                                <div className='flex flex-col space-y-2'>
-                                                    <p className='font-semibold'>Passos para resolução:</p>
-                                                    <p>{duvida.passos || "Não informado"}</p>
-                                                </div>
-                                            </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </AccordionRoot>
+                                <CardRespostas
+                                    key={resposta.id || index}
+                                    resposta={resposta}
+                                    isExpanded={isExpanded}
+                                    onToggle={handleToggle}
+                                    dataFormatada={dataFormatada}
+                                />
                             );
                         })
                     ) : (
