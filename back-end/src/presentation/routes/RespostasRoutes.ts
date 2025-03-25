@@ -5,7 +5,7 @@ import { authenticateToken } from "../../infra/middlewares/authenticateToken.ts"
 const respostasController = new RespostasController();
 const router = Router();
 
-router.get('/', async (req, res) => respostasController.findAll(req, res));
+router.get('/', authenticateToken, async (req, res) => respostasController.findAll(req, res));
 
 router.get('/:id', async (req, res) => respostasController.findById(req, res));
 

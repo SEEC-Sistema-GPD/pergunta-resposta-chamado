@@ -17,7 +17,8 @@ export const authenticateToken = (
 
     if (!token) {
         console.log("Token não fornecido.");
-        res.redirect("/api/auth/signin");
+        res.status(404).json({ message: "Token não fornecido." });
+        res.redirect("/");
         return;
     }
 
@@ -25,7 +26,7 @@ export const authenticateToken = (
         if (err) {
             console.log("Token inválido." + token);
             res.status(403).json({ message: "Token inválido." });
-            res.redirect("/api/auth/signin");
+            res.redirect("/");
             return;
         }
         // Se o token for válido, armazena o payload (decoded) na propriedade 'user' do request.
