@@ -1,8 +1,10 @@
+import { Header } from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import Swal from "sweetalert2";
 import { Footer } from '../components/Footer';
+import minhaImagem from '../../assets/brasao-seec.png';
 
 // Interface do token
 interface MyTokenPayload extends JwtPayload {
@@ -13,7 +15,7 @@ export function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  
   async function handleLogin() {
     if (!username.trim() || !password.trim()) {
       Swal.fire({
@@ -54,7 +56,7 @@ export function Login() {
         }
       });
 
-    } catch (error) {
+    } catch {
       Swal.fire({
         icon: "error",
         title: "Erro!",
@@ -62,26 +64,16 @@ export function Login() {
       });
     }
   }
-
   return (
     <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
-      <header className="w-full bg-[#3D4A7B] text-white flex flex-col">
-        <div className="flex justify-between items-center p-2 border-b-4 border-[#D99C44]">
-          <h1 className="text-lg font-medium">
-            SEEC - SIGEduc - Sistema Integrado de Gestão da Educação
-          </h1>
-        </div>
-        <div className="p-2 bg-[#C4D2EB] flex items-center">
-          <p className="text-primary">
-            Perguntas Frequentes para a Equipe de Suporte do SEEC - SIGEduc
-          </p>
-        </div>
-      </header>
-
+      <Header />
+      
       <div className="flex m-[10%] items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
-          <h1 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h1>
-
+      <div className="w-160">
+          <img src={minhaImagem} alt="Logo" className="w-200 mx-auto" />
+      </div>
+        <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">          
+          <h5 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h5>
           <input
             type="text"
             placeholder="Usuário"
@@ -102,7 +94,9 @@ export function Login() {
           >
             Entrar
           </button>
+          <p className="mt-4 text-sm text-gray-400"> As credenciais utilizadas são as mesmas do login local da SEEC (LDAP)</p>
         </div>
+        
       </div>
       <Footer />
     </div>
