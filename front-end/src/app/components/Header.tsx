@@ -6,10 +6,11 @@ import "react-tooltip/dist/react-tooltip.css";
 
 export const Header = () => {
     const navigate = useNavigate();
+    const nomeUsuario = localStorage.getItem("displayName")?.split(" ")[0] || "";
 
     function handleLogout() {
         Swal.fire({
-            title: "Deseja encerrar sua sessão?",
+            title: `Deseja encerrar sua sessão${nomeUsuario ? `, ${nomeUsuario}` : ""}?`,
             text: "Você será redirecionado para a página inicial.",
             icon: "warning",
             showCancelButton: true,
@@ -45,7 +46,7 @@ export const Header = () => {
                 </h1>
                 <button
                     onClick={handleLogout}
-                    className="cursor-pointer text-white font-bold rounded text-2xl"
+                    className="cursor-pointer text-white font-bold rounded mr-2 text-2xl"
                     data-tooltip-id="desconectar"
                 >
                     <TbLogout />

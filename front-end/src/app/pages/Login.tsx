@@ -4,6 +4,7 @@ import { useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import Swal from "sweetalert2";
 import { Footer } from '../components/Footer';
+import { FaEye, FaEyeSlash, FaUser, FaUserCircle } from "react-icons/fa";
 import minhaImagem from '../../assets/brasao-seec.png';
 
 // Interface do token
@@ -15,7 +16,8 @@ export function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
+  const [showPassword, setShowPassword] = useState(false);
+
   async function handleLogin() {
     if (!username.trim() || !password.trim()) {
       Swal.fire({
@@ -37,9 +39,13 @@ export function Login() {
       });
 
       const data = await response.json();
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token); // Salva o token no localStorage
+      localStorage.setItem("displayName", data.displayName); // Salva o nome no localStorage
+
 
       const decodedUser = jwtDecode<MyTokenPayload>(data.token);
+      const nomeUsuarioCompleto = data.displayName;
+      const primeiroNomeUsuario = nomeUsuarioCompleto.split(" ")[0]; // Pega só o primeiro nome do usuário
 
       Swal.fire({
         icon: "info",
@@ -48,6 +54,22 @@ export function Login() {
         showConfirmButton: false,
         timer: 2000,
         willClose: () => {
+          // ✅ Exibe o toast no canto inferior direito
+          Swal.fire({
+            toast: true,
+            position: "bottom-end",
+            icon: "success",
+            title: `Seja bem-vindo, ${primeiroNomeUsuario}.`,
+            text: "Que bom ter você aqui!",
+            showConfirmButton: false,
+            timer: 4000,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          // Redirecionamento após login
           if (decodedUser.super) {
             navigate("/home-admin");
           } else {
@@ -72,8 +94,9 @@ export function Login() {
       <div className="w-160">
           <img src={minhaImagem} alt="Logo" className="w-200 mx-auto" />
       </div>
-        <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">          
-          <h5 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h5>
+        <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
+          <h1 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h1>
+
           <input
             type="text"
             placeholder="Usuário"
@@ -94,10 +117,11 @@ export function Login() {
           >
             Entrar
           </button>
-          <p className="mt-4 text-sm text-gray-400"> As credenciais utilizadas são as mesmas do login local da SEEC (LDAP)</p>
+          <p className="mt-4 text-sm text-gray-400"> As credenciais utilizadas são as mesmas do <strong> login local da SEEC </strong> (LDAP)</p>
         </div>
         
       </div>
+
       <Footer />
     </div>
   );

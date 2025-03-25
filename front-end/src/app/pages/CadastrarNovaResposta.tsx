@@ -30,7 +30,10 @@ export function CadastrarNovaResposta() {
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
         const { name, value } = event.target;
-        setFormData((prevData) => ({ ...prevData, [name]: name === "categoria_id" ? Number(value) : value }));
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: name === "categoria_id" ? Number(value) : value,
+        }));
     }
 
     async function handleSubmit(event: React.FormEvent) {
@@ -76,88 +79,91 @@ export function CadastrarNovaResposta() {
     }
 
     return (
-        <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
+        <div className="flex flex-col min-h-screen w-screen bg-[#c4d2eb77]">
             <Header />
 
-            <div className="flex flex-1 items-center justify-center">
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white p-4 rounded-lg shadow-md w-[90%] sm:w-[70%] md:w-[50%] lg:w-[40%] text-center flex flex-col gap-3"
-                >
-                    <h2 className="text-2xl font-bold text-[#3D4A7B]">Cadastrar Nova Resposta</h2>
+            <div className="flex items-center justify-center py-22 px-7 md:py-26">
+                <div className="w-full max-w-4xl">
+                    <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Cadastrar Resposta</div>
+                    <div className="bg-white shadow-md rounded-b-lg p-4">
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
+                            <input
+                                type="text"
+                                name="titulo"
+                                placeholder="Título"
+                                value={formData.titulo}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            />
 
-                    <input
-                        type="text"
-                        name="titulo"
-                        placeholder="Título"
-                        value={formData.titulo}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        required
-                    />
+                            <select
+                                name="categoria_id"
+                                value={formData.categoria_id}
+                                onChange={handleChange}
+                                className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 ${formData.categoria_id ? "text-black" : "text-gray-500"
+                                    }`}
+                                required
+                            >
+                                <option value="" disabled hidden>Selecione uma categoria</option>
+                                {categorias.map((categoria) => (
+                                    <option key={categoria.id} value={categoria.id}>
+                                        {categoria.nome}
+                                    </option>
+                                ))}
+                            </select>
 
-                    <select
-                        name="categoria_id"
-                        value={formData.categoria_id}
-                        onChange={handleChange}
-                        className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 ${formData.categoria_id ? "text-black" : "text-gray-500"
-                            }`}
-                        required
-                    >
-                        <option value="" disabled hidden>Selecione uma categoria</option>
-                        {categorias.map((categoria) => (
-                            <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
-                        ))}
-                    </select>
+                            <input
+                                type="text"
+                                name="descricao"
+                                placeholder="Descrição do problema"
+                                value={formData.descricao}
+                                onChange={handleChange}
+                                className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            />
 
-                    <input
-                        type="text"
-                        name="descricao"
-                        placeholder="Descrição do problema"
-                        value={formData.descricao}
-                        onChange={handleChange}
-                        className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        required
-                    />
+                            <input
+                                type="text"
+                                name="causa"
+                                placeholder="Causa do problema"
+                                value={formData.causa}
+                                onChange={handleChange}
+                                className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            />
 
-                    <input
-                        type="text"
-                        name="causa"
-                        placeholder="Causa do problema"
-                        value={formData.causa}
-                        onChange={handleChange}
-                        className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        required
-                    />
+                            <input
+                                type="text"
+                                name="resposta"
+                                placeholder="Resposta padrão"
+                                value={formData.resposta}
+                                onChange={handleChange}
+                                className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            />
 
-                    <input
-                        type="text"
-                        name="resposta"
-                        placeholder="Resposta padrão"
-                        value={formData.resposta}
-                        onChange={handleChange}
-                        className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        required
-                    />
+                            <input
+                                type="text"
+                                name="passos"
+                                placeholder="Passos para resolução"
+                                value={formData.passos}
+                                onChange={handleChange}
+                                className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            />
 
-                    <input
-                        type="text"
-                        name="passos"
-                        placeholder="Passos para resolução"
-                        value={formData.passos}
-                        onChange={handleChange}
-                        className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        required
-                    />
-
-                    <button
-                        type="submit"
-                        className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
-                    >
-                        Cadastrar
-                    </button>
-                </form>
+                            <button
+                                type="submit"
+                                className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
+                            >
+                                Cadastrar
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
+
             <Footer />
         </div>
     );
