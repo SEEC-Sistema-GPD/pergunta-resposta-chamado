@@ -45,7 +45,7 @@ export const Header = () => {
                 </h1>
                 <button
                     onClick={handleLogout}
-                    className="cursor-pointer text-white font-bold rounded text-2xl"
+                    className="cursor-pointer text-white font-bold rounded mr-2 text-2xl"
                     data-tooltip-id="desconectar"
                 >
                     <TbLogout />

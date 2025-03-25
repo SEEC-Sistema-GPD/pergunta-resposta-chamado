@@ -93,7 +93,7 @@ export function GerenciarUsuarios() {
     return (
         <div className="flex flex-col min-w-screen min-h-screen overflow-x-hidden bg-[#c4d2eb77]">
             <Header />
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center py-6 md:py-22">
                 <div className="p-4 w-full max-w-[95vw] sm:max-w-4xl">
                     <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Gerenciar Usuários</div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
@@ -104,7 +104,7 @@ export function GerenciarUsuarios() {
                                         <span>{usuario.nome} ({formatarCPF(usuario.cpf)})</span>
                                         <button
                                             onClick={() => togglePermissao(usuario)}
-                                            className={`w-full sm:w-[18%] px-3 py-1 rounded text-white cursor-pointer transition-all ${usuario.super ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"}`}
+                                            className={`w-full sm:w-[18%] px-3 py-1 rounded text-white cursor-pointer ${usuario.super ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"}`}
                                         >
                                             {usuario.super ? "Remover admin" : "Tornar admin"}
                                         </button>

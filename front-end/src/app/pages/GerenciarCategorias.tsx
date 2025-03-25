@@ -165,7 +165,7 @@ export function GerenciarCategorias() {
     return (
         <div className="flex flex-col min-w-screen min-h-screen bg-[#c4d2eb77]">
             <Header />
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center py-6 px-3 md:py-22">
                 <div className="p-4 w-full max-w-4xl">
                     <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Gerenciar Categorias</div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
@@ -208,26 +208,26 @@ export function GerenciarCategorias() {
             {/* Modal para Adicionar Categoria */}
             {modalCriacaoAberto && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300">
-              
-                    <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Adicionar Categoria</h2>
-                    <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
-                        placeholder="Nome da categoria"
-                        value={novaCategoria}
-                        onChange={(e) => setNovaCategoria(e.target.value)}
-                    />
-                    <div className="flex justify-end gap-2">
-                        <button className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>Cancelar</button>
-                        <button
-                            className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]"
-                            onClick={adicionarCategoria}
-                        >
-                            Adicionar
-                        </button>
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300">
+
+                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Adicionar Categoria</h2>
+                        <input
+                            type="text"
+                            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
+                            placeholder="Nome da categoria"
+                            value={novaCategoria}
+                            onChange={(e) => setNovaCategoria(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-2">
+                            <button className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>Cancelar</button>
+                            <button
+                                className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]"
+                                onClick={adicionarCategoria}
+                            >
+                                Adicionar
+                            </button>
+                        </div>
                     </div>
-                </div>
                 </div>
             )}
 

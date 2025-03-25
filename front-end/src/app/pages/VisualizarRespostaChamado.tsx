@@ -80,13 +80,13 @@ export function VisualizarRespostaChamado() {
     }
 
     return (
-        <div className='w-screen bg-[#c4d2eb77] h-screen flex flex-col overflow-y-auto space-y-4'>
+        <div className='w-screen bg-[#c4d2eb77] min-h-screen flex flex-col space-y-4'>
             <Header />
             <div className='flex flex-col items-center'>
 
-                <div className="flex flex-col md:flex-row justify-center items-center p-2 gap-4 w-[55%]">
+                <div className="flex flex-col md:flex-row justify-center items-center p-2 gap-4 w-full md:w-[55%]">
                     {/* Barra de Pesquisa */}
-                    <div className="w-[60%]">
+                    <div className="w-full md:w-[60%]">
                         <BarraDePesquisa
                             value={titulo}
                             onChange={setTitulo}
@@ -95,7 +95,7 @@ export function VisualizarRespostaChamado() {
                     </div>
 
                     {/* Filtro por Categoria */}
-                    <div className="w-[40%]">
+                    <div className="w-full md:w-[40%]">
                         <FiltragemPorCategoria
                             categorias={categorias}
                             onChange={getRespostasByCategoria}
@@ -103,7 +103,7 @@ export function VisualizarRespostaChamado() {
                     </div>
                 </div>
 
-                <div className='flex flex-col items-center space-y-2 p-2 w-[55%]'>
+                <div className='flex flex-col items-center space-y-2 p-2 w-full md:w-[55%]'>
                     {respostas.length > 0 ? (
                         respostas.map((resposta, index) => {
                             const isExpanded = expandedIndex === index;
