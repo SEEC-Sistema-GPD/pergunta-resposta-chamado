@@ -100,7 +100,7 @@ export function GerenciarUsuarios() {
                         <ul>
                             {usuarios.length > 0 ? (
                                 usuarios.map((usuario) => (
-                                    <li key={usuario.id} className="flex flex-col sm:flex-row justify-between gap-2 p-2 border-b items-center">
+                                    <li key={usuario.id} className="flex flex-col sm:flex-row justify-between gap-2 p-2 border-b items-start">
                                         <span>{usuario.nome} ({formatarCPF(usuario.cpf)})</span>
                                         <button
                                             onClick={() => togglePermissao(usuario)}

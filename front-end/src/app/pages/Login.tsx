@@ -3,6 +3,7 @@ import { useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import Swal from "sweetalert2";
 import { Footer } from '../components/Footer';
+import { FaEye, FaEyeSlash, FaUser, FaUserCircle } from "react-icons/fa";
 
 // Interface do token
 interface MyTokenPayload extends JwtPayload {
@@ -13,6 +14,7 @@ export function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleLogin() {
     if (!username.trim() || !password.trim()) {
@@ -35,9 +37,13 @@ export function Login() {
       });
 
       const data = await response.json();
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token); // Salva o token no localStorage
+      localStorage.setItem("displayName", data.displayName); // Salva o nome no localStorage
+
 
       const decodedUser = jwtDecode<MyTokenPayload>(data.token);
+      const nomeUsuarioCompleto = data.displayName;
+      const primeiroNomeUsuario = nomeUsuarioCompleto.split(" ")[0]; // Pega só o primeiro nome do usuário
 
       Swal.fire({
         icon: "info",
@@ -46,6 +52,22 @@ export function Login() {
         showConfirmButton: false,
         timer: 2000,
         willClose: () => {
+          // ✅ Exibe o toast no canto inferior direito
+          Swal.fire({
+            toast: true,
+            position: "bottom-end",
+            icon: "success",
+            title: `Seja bem-vindo, ${primeiroNomeUsuario}.`,
+            text: "Que bom ter você aqui!",
+            showConfirmButton: false,
+            timer: 4000,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          // Redirecionamento após login
           if (decodedUser.super) {
             navigate("/home-admin");
           } else {
@@ -80,22 +102,38 @@ export function Login() {
 
       <div className="flex m-[10%] items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
+          <FaUserCircle className="text-6xl text-gray-500 mx-auto mb-4" />
+
           <h1 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h1>
 
-          <input
-            type="text"
-            placeholder="Usuário"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+          <div className="flex items-center border border-gray-300 rounded mb-2 px-2">
+            <FaUser className="text-gray-500 mr-2" />
+            <input
+              type="text"
+              placeholder="Usuário"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
+          <div className="flex items-center border border-gray-300 rounded mb-4 px-2 relative">
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-gray-500 mr-2 focus:outline-none"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
           <button
             onClick={handleLogin}
             className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
@@ -104,6 +142,7 @@ export function Login() {
           </button>
         </div>
       </div>
+
       <Footer />
     </div>
   );

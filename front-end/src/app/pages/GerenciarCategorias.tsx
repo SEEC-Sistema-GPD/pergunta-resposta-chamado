@@ -172,8 +172,8 @@ export function GerenciarCategorias() {
                         <ul className="divide-y divide-gray-300">
                             {categorias.length > 0 ? (
                                 categorias.map((categoria) => (
-                                    <li key={categoria.id} className="flex flex-col sm:flex-row justify-between gap-2 p-3 items-center">
-                                        <span className="font-medium text-gray-800">{categoria.nome}</span>
+                                    <li key={categoria.id} className="flex flex-row justify-between gap-2 p-3 items-center">
+                                        <span className="font-medium text-gray-800 break-words max-w-[60%]">{categoria.nome}</span>
                                         <div className="flex gap-2">
                                             <button className="p-1 cursor-pointer" onClick={() => abrirModalEdicao(categoria)} data-tooltip-id="editarCategoria">
                                                 <BsPencilSquare size={18} />

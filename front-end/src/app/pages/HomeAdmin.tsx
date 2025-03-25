@@ -1,6 +1,7 @@
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { FaRegCommentDots, FaUserCog, FaEye } from "react-icons/fa";
+import { FaRegCommentDots, FaUserCog } from "react-icons/fa";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdCategory } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
@@ -48,7 +49,7 @@ export function HomeAdmin() {
                         className="bg-white p-6 rounded-lg shadow-md w-full max-w-xs h-48 text-center cursor-pointer hover:shadow-lg transition flex flex-col items-center justify-between"
                         onClick={() => navigate("/visualizar-resposta-chamado")}
                     >
-                        <FaEye className="text-4xl text-[#3D4A7B] mb-2" />
+                        <FaMagnifyingGlass className="text-4xl text-[#3D4A7B] mb-2 -scale-x-100" />
                         <h2 className="text-xl font-bold text-[#3D4A7B] mb-2">Visualizar Respostas</h2>
                         <p className="text-gray-600 text-sm">Consulte as respostas cadastradas para suporte dos chamados.</p>
                     </div>
