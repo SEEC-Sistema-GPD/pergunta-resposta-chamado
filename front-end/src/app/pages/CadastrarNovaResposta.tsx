@@ -84,7 +84,7 @@ export function CadastrarNovaResposta() {
 
             <div className="flex items-center justify-center py-22 px-7 md:py-26">
                 <div className="w-full max-w-4xl">
-                    <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Cadastrar Nova Resposta</div>
+                    <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Cadastrar Resposta</div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
                             <input

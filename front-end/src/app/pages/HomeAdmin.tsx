@@ -14,13 +14,13 @@ export function HomeAdmin() {
 
             <div className="w-full">
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row flex-wrap items-center justify-center gap-6 py-6 md:py-12">
-                    {/* Card - Cadastrar Nova Resposta */}
+                    {/* Card - Cadastrar Resposta */}
                     <div
                         className="bg-white p-6 rounded-lg shadow-md w-full max-w-xs h-48 text-center cursor-pointer hover:shadow-lg transition flex flex-col items-center justify-between"
                         onClick={() => navigate("/cadastrar-nova-resposta")}
                     >
                         <FaRegCommentDots className="text-4xl text-[#3D4A7B] mb-2" />
-                        <h2 className="text-xl font-bold text-[#3D4A7B] mb-2">Cadastrar Nova Resposta</h2>
+                        <h2 className="text-xl font-bold text-[#3D4A7B] mb-2">Cadastrar Resposta</h2>
                         <p className="text-gray-600 text-sm">Permite cadastrar uma resposta padrão para os chamados.</p>
                     </div>
 
