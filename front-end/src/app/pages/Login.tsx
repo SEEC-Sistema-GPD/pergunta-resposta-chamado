@@ -4,7 +4,7 @@ import { useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import Swal from "sweetalert2";
 import { Footer } from '../components/Footer';
-import { FaEye, FaEyeSlash, FaUser, FaUserCircle } from "react-icons/fa";
+import { FaEye, FaEyeSlash, } from "react-icons/fa";
 import minhaImagem from '../../assets/brasao-seec.png';
 
 // Interface do token
@@ -104,13 +104,22 @@ export function Login() {
             onChange={(e) => setUsername(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-2 text-gray-500"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
           <button
             onClick={handleLogin}
             className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
