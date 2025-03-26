@@ -38,22 +38,22 @@ export function CardRespostas({ resposta, isExpanded, onToggle, dataFormatada }:
                 <div className="mt-4 space-y-4 text-gray-700">
                     <div>
                         <h4 className="text-base md:text-lg font-medium mb-1">Descrição do problema</h4>
-                        <p>{resposta.descricao || "Não informado"}</p>
+                        <p className="whitespace-pre-wrap">{resposta.descricao || "Não informado"}</p>
                     </div>
 
                     <div>
                         <h4 className="text-lg font-medium mb-1">Causa do problema</h4>
-                        <p>{resposta.causa || "Não informada"}</p>
+                        <p className="whitespace-pre-wrap">{resposta.causa || "Não informada"}</p>
                     </div>
 
                     <div>
                         <h4 className="text-lg font-medium mb-1">Resposta padrão</h4>
-                        <p>{resposta.resposta || "Não informada"}</p>
+                        <p className="whitespace-pre-wrap">{resposta.resposta || "Não informada"}</p>
                     </div>
 
                     <div>
                         <h4 className="text-lg font-medium mb-1">Passos para resolução</h4>
-                        <p>{resposta.passos || "Não informados"}</p>
+                        <p className="whitespace-pre-wrap">{resposta.passos || "Não informados"}</p>
                     </div>
                 </div>
             )}

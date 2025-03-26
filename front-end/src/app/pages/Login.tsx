@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { FaEye, FaEyeSlash, } from "react-icons/fa";
-
+import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { Header } from "../components/Header";
 import { Footer } from '../components/Footer';
 import minhaImagem from '../../assets/brasao-seec.png';
 
 // Interface do token
 interface MyTokenPayload extends JwtPayload {
+  id: string;
   super: boolean;
 }
 
@@ -33,17 +32,22 @@ export function Login() {
       const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({"cpf": username,"password": password})
+        body: JSON.stringify({ "cpf": username, "password": password })
       });
 
       const data = await response.json();
-      localStorage.setItem("token", data.token); // Salva o token no localStorage
-      localStorage.setItem("displayName", data.displayName); // Salva o nome no localStorage
 
+      // Salva token e nome
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("displayName", data.displayName);
 
+      // Decodifica token e salva ID e super
       const decodedUser = jwtDecode<MyTokenPayload>(data.token);
+      localStorage.setItem("userId", decodedUser.id);
+      localStorage.setItem("isSuper", String(decodedUser.super));
+
       const nomeUsuarioCompleto = data.displayName;
-      const primeiroNomeUsuario = nomeUsuarioCompleto.split(" ")[0]; // Pega só o primeiro nome do usuário
+      const primeiroNomeUsuario = nomeUsuarioCompleto.split(" ")[0];
 
       Swal.fire({
         icon: "info",
@@ -52,7 +56,6 @@ export function Login() {
         showConfirmButton: false,
         timer: 2000,
         willClose: () => {
-          // ✅ Exibe o toast no canto inferior direito
           Swal.fire({
             toast: true,
             position: "bottom-end",
@@ -67,7 +70,6 @@ export function Login() {
             },
           });
 
-          // Redirecionamento após login
           if (decodedUser.super) {
             navigate("/home-admin");
           } else {
@@ -84,102 +86,70 @@ export function Login() {
       });
     }
   }
-  // return (
-  //   <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
-  //     <Header />      
-  //     <div className="flex m-[5%] items-center justify-center">
-  //     <div className="w-160">
-  //         <img src={minhaImagem} alt="Logo" className="w-200 mx-auto" />
-  //     </div>
-  //       <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
-  //         <h1 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h1>
-  //         <input
-  //           type="text"
-  //           placeholder="Usuário"
-  //           value={username}
-  //           onChange={(e) => setUsername(e.target.value)}
-  //           className="w-full p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-  //         />
-  //         <div className="relative">
-  //           <input
-  //             type={showPassword ? "text" : "password"}
-  //             placeholder="Senha"
-  //             value={password}
-  //             onChange={(e) => setPassword(e.target.value)}
-  //             className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-  //           />
-  //           <button
-  //             type="button"
-  //             onClick={() => setShowPassword(!showPassword)}
-  //             className="absolute right-2 top-2 text-gray-500"
-  //           >
-  //             {showPassword ? <FaEyeSlash /> : <FaEye />}
-  //           </button>
-  //         </div>
-  //         <button
-  //           onClick={handleLogin}
-  //           className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
-  //         >
-  //           Entrar
-  //         </button>
-  //         <p className="mt-4 text-sm text-gray-400"> As credenciais utilizadas são as mesmas do <strong> login local da SEEC </strong> (LDAP)</p>
-  //       </div>
-        
-  //     </div>
-
-  //     <Footer />
-  //   </div>
-  // );
 
   return (
     <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
-      <Header />
-      <div className="flex m-[10%] items-center justify-center">
-      <div className="w-160">
-          <img src={minhaImagem} alt="Logo" className="w-200 mx-auto" />
-      </div>
-      {/* <div className="w-160"> */}
-          {/* <img src={minhaImagem} alt="Logo" className="w-200 mx-auto" /> */}
-      {/* </div> */}
-        <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
-          <h1 className="text-2xl font-bold text-[#3D4A7B] mb-4">Login</h1>
 
-          <input
-            type="text"
-            placeholder="Usuário"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <div className="relative">
+      <header className="w-full bg-[#3D4A7B] text-white flex flex-col">
+        <div className="flex justify-between items-center p-2 border-b-4 border-[#D99C44]">
+          <h1 className="text-lg font-medium flex-1 text-center">
+            SEEC - SIGEduc - Sistema Integrado de Gestão da Educação
+          </h1>
+        </div>
+        <div className="p-2 bg-[#C4D2EB] flex-1 text-center items-center">
+          <p className="text-primary">
+            Perguntas Frequentes para a Equipe de Suporte da SEEC - SIGEduc
+          </p>
+        </div>
+      </header>
+
+      <div className="flex flex-1 items-center justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
+          <div className="flex justify-center">
+            <img src={minhaImagem} alt="Logo" className="max-w-[400px] h-auto" />
+          </div>
+
+          <div className="flex items-center border border-gray-300 rounded mb-2 px-2">
+            <FaUser className="text-gray-500 mr-2" />
+            <input
+              type="text"
+              placeholder="Usuário"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
+          <div className="flex items-center border border-gray-300 rounded mb-4 px-2 relative">
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-gray-500 mr-2 focus:outline-none"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-2 top-2 text-gray-500"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
           </div>
+
           <button
             onClick={handleLogin}
             className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
           >
             Entrar
           </button>
-          <p className="mt-4 text-sm text-gray-400"> As credenciais utilizadas são as mesmas do <strong> login local da SEEC </strong> (LDAP)</p>
+          <p className="mt-4 text-sm text-gray-400">
+            As credenciais utilizadas são as mesmas do <strong>login local da SEEC</strong> (LDAP).
+          </p>
         </div>
-        
       </div>
 
       <Footer />
     </div>
   );
-
 }

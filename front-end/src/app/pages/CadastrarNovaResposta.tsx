@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
@@ -14,6 +14,11 @@ export function CadastrarNovaResposta() {
     });
 
     const [categorias, setCategorias] = useState<{ id: number; nome: string }[]>([]);
+
+    const descricaoRef = useRef<HTMLTextAreaElement | null>(null);
+    const causaRef = useRef<HTMLTextAreaElement | null>(null);
+    const respostaRef = useRef<HTMLTextAreaElement | null>(null);
+    const passosRef = useRef<HTMLTextAreaElement | null>(null);
 
     useEffect(() => {
         async function fetchCategorias() {
@@ -36,12 +41,19 @@ export function CadastrarNovaResposta() {
         }));
     }
 
+    function autoResizeTextarea(el: HTMLTextAreaElement | null) {
+        if (el) {
+            el.style.height = "auto";
+            el.style.height = `${el.scrollHeight}px`;
+        }
+    }
+
     async function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
 
         const confirmResult = await Swal.fire({
             title: "Tem certeza disso?",
-            text: "Deseja realmente cadastrar essa nova resposta?",
+            text: "Você cadastrará uma nova resposta.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -68,6 +80,13 @@ export function CadastrarNovaResposta() {
                     categoria_id: "",
                     resposta: "",
                     passos: "",
+                });
+
+                // Resetar altura dos textareas
+                [descricaoRef, causaRef, respostaRef, passosRef].forEach(ref => {
+                    if (ref.current) {
+                        ref.current.style.height = "auto";
+                    }
                 });
             } else {
                 throw new Error("Erro ao cadastrar resposta");
@@ -101,8 +120,7 @@ export function CadastrarNovaResposta() {
                                 name="categoria_id"
                                 value={formData.categoria_id}
                                 onChange={handleChange}
-                                className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 ${formData.categoria_id ? "text-black" : "text-gray-500"
-                                    }`}
+                                className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 ${formData.categoria_id ? "text-black" : "text-gray-500"}`}
                                 required
                             >
                                 <option value="" disabled hidden>Selecione uma categoria</option>
@@ -113,43 +131,51 @@ export function CadastrarNovaResposta() {
                                 ))}
                             </select>
 
-                            <input
-                                type="text"
+                            <textarea
+                                ref={descricaoRef}
                                 name="descricao"
                                 placeholder="Descrição do problema"
                                 value={formData.descricao}
                                 onChange={handleChange}
-                                className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                onInput={(e) => autoResizeTextarea(e.currentTarget)}
+                                rows={1}
+                                className="text-black w-full p-2 border border-gray-300 rounded resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 required
                             />
 
-                            <input
-                                type="text"
+                            <textarea
+                                ref={causaRef}
                                 name="causa"
                                 placeholder="Causa do problema"
                                 value={formData.causa}
                                 onChange={handleChange}
-                                className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                onInput={(e) => autoResizeTextarea(e.currentTarget)}
+                                rows={1}
+                                className="text-black w-full p-2 border border-gray-300 rounded resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 required
                             />
 
-                            <input
-                                type="text"
+                            <textarea
+                                ref={respostaRef}
                                 name="resposta"
                                 placeholder="Resposta padrão"
                                 value={formData.resposta}
                                 onChange={handleChange}
-                                className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                onInput={(e) => autoResizeTextarea(e.currentTarget)}
+                                rows={1}
+                                className="text-black w-full p-2 border border-gray-300 rounded resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 required
                             />
 
-                            <input
-                                type="text"
+                            <textarea
+                                ref={passosRef}
                                 name="passos"
                                 placeholder="Passos para resolução"
                                 value={formData.passos}
                                 onChange={handleChange}
-                                className="text-black w-full p-2 border border-gray-300 rounded h-16 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                onInput={(e) => autoResizeTextarea(e.currentTarget)}
+                                rows={1}
+                                className="text-black w-full p-2 border border-gray-300 rounded resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 required
                             />
 
