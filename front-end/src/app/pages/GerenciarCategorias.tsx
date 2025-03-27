@@ -86,7 +86,7 @@ export function GerenciarCategorias() {
         }
 
         if (categoriaEditando?.nome === novoNomeCategoria) {
-            MySwal.fire("Erro", "O novo nome da categoria deve ser diferente do atual.", "error");
+            MySwal.fire("Erro!", "Escolha um nome diferente do atual para a categoria.", "error");
             return;
         }
 
@@ -98,6 +98,12 @@ export function GerenciarCategorias() {
                 },
                 body: JSON.stringify({ nome: novoNomeCategoria }),
             });
+
+            if (response.status === 409) {
+                const data = await response.json();
+                MySwal.fire("Erro!", data.message || "Esse nome de categoria já está em uso.", "error");
+                return;
+            }
 
             if (!response.ok) {
                 throw new Error("Erro ao atualizar categoria");

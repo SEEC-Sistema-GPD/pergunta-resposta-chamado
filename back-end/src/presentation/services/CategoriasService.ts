@@ -54,14 +54,26 @@ export class CategoriasService {
 
     async update(id: number, dto: CategoriaRequestDTO) {
         try {
-            const categoria = await this.CategoriasRepository.update(id, dto);
-            if (!categoria) {
-                return { message: "Erro ao atualizar categoria" };
+            const categoriaAtual = await this.CategoriasRepository.findById(id);
+            if (!categoriaAtual) {
+                return { message: "Categoria não encontrada" };
             }
+
+            // Verifica se já existe uma categoria com o nome escolhido
+            if (categoriaAtual.nome.toLowerCase() !== dto.nome.toLowerCase()) {
+                const nomeExistente = await this.CategoriasRepository.findByName(dto.nome);
+                if (nomeExistente) {
+                    throw { status: 409, message: "Esse nome de categoria já está em uso." };
+                }
+            }
+
+            const categoria = await this.CategoriasRepository.update(id, dto);
             return categoria;
-        }
-        catch (error) {
+        } catch (error: any) {
             console.error("Erro ao atualizar categoria:", error);
+            if (error.status === 409) {
+                throw error;
+            }
             return { message: "Erro ao atualizar categoria" };
         }
     }
