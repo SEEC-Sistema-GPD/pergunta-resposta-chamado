@@ -29,17 +29,27 @@ export class CategoriasService {
 
     async create(dto: CategoriaRequestDTO) {
         try {
+            const nomeExistente = await this.CategoriasRepository.findByName(dto.nome);
+
+            // Verifica se já existe uma categoria com o nome escolhido
+            if (nomeExistente) {
+                throw { status: 409, message: "Esse nome de categoria já está em uso." };
+            }
+
             const categoria = await this.CategoriasRepository.create(dto);
+
             if (!categoria) {
                 return { message: "Erro ao criar categoria" };
             }
+
             return categoria;
-        }
-        catch (error) {
+        } catch (error: any) {
             console.error("Erro ao criar categoria:", error);
+            if (error.status === 409) {
+                throw error;
+            }
             return { message: "Erro ao criar categoria" };
         }
-
     }
 
     async update(id: number, dto: CategoriaRequestDTO) {

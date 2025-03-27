@@ -55,6 +55,13 @@ export function GerenciarCategorias() {
                 body: JSON.stringify({ nome: novaCategoria }),
             });
 
+            // Verifica se já existe uma categoria com o nome escolhido
+            if (response.status === 409) {
+                const data = await response.json();
+                MySwal.fire("Erro!", data.message || "Esse nome de categoria já está em uso.", "error");
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error("Erro ao adicionar categoria");
             }
