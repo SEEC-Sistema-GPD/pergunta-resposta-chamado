@@ -18,7 +18,7 @@ export default class RespostaService {
             }
             return response;
         }
-        catch (error) {
+        catch {
             alert('Erro ao buscar respostas');
         }
     }
@@ -32,7 +32,7 @@ export default class RespostaService {
         return response.data;
     }
 
-    async getRespostasByCategoria(categoria: any) {
+    async getRespostasByCategoria(categoria: number) {
         const response = await this.httpCliente.get(`${this.url}/api/respostas/categoria/${categoria}`);
         if (!response) {
             throw new Error('Erro ao buscar respostas');

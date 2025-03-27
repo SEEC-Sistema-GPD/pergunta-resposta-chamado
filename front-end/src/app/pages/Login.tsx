@@ -88,7 +88,7 @@ export function Login() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#c4d2eb77]">
+    <div className="flex flex-col min-h-screen w-screen bg-[#c4d2eb77]">
 
       <header className="w-full bg-[#3D4A7B] text-white flex flex-col">
         <div className="flex justify-between items-center p-2 border-b-4 border-[#D99C44]">
@@ -106,7 +106,7 @@ export function Login() {
       <div className="flex flex-1 items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
           <div className="flex justify-center">
-            <img src={minhaImagem} alt="Logo" className="max-w-[400px] h-auto" />
+            <img src={minhaImagem} alt="Logo" className="max-w-[350px] h-auto" />
           </div>
 
           <div className="flex items-center border border-gray-300 rounded mb-2 px-2">
