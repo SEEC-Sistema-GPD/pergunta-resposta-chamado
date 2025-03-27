@@ -1,9 +1,10 @@
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { FaRegCommentDots, FaUserCog } from "react-icons/fa";
+import { FaUserCog, FaCommentMedical } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdCategory } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+
 
 export function HomeAdmin() {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ export function HomeAdmin() {
                     className="bg-white p-6 rounded-lg shadow-md w-full max-w-xs h-48 text-center cursor-pointer hover:shadow-lg transition flex flex-col items-center justify-between"
                     onClick={() => navigate("/cadastrar-nova-resposta")}
                 >
-                    <FaRegCommentDots className="text-4xl text-[#3D4A7B] mb-2" />
+                    <FaCommentMedical className="text-4xl text-[#3D4A7B] mb-2" />
                     <h2 className="text-xl font-bold text-[#3D4A7B] mb-2">Cadastrar Resposta</h2>
                     <p className="text-gray-600 text-sm">Permite cadastrar uma resposta padrão para os chamados.</p>
                 </div>
