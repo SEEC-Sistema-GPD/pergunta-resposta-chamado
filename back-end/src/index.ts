@@ -15,14 +15,21 @@ class App {
 
   middlewares() {
     app.use(cors({
-      origin: ['http://localhost:5173'],
+      origin: (origin, callback) => {
+        // Aceita qualquer porta do localhost
+        if (!origin || origin.startsWith('http://localhost:')) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      }
     }));
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
   }
 
   routes() {
-    app.use('/api/respostas', RespostasRoutes);    
+    app.use('/api/respostas', RespostasRoutes);
     app.use('/api/categoria', CategoriaRoutes);
     app.use('/api/usuario', UsuarioRoutes);
     app.use('/api/auth', AuthRoutes);
