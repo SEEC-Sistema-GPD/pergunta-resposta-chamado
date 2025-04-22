@@ -34,5 +34,8 @@ services:
     networks:
       - sigeduc-chamados-network
 
+volumes:
+  postgres_data:
+
 networks:
   sigeduc-chamados-network:
