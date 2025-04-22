@@ -71,7 +71,7 @@ export function VisualizarRespostaChamado() {
                 await getRespostas();
             } else {
                 setCategoriaSelecionada(String(categoria_id));
-                const res = await service.getRespostasByCategoria(String(categoria_id));
+                const res = await service.getRespostasByCategoria(categoria_id);
                 setRespostas(res);
             }
         } catch (error) {
