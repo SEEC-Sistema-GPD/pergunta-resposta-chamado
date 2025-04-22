@@ -10,6 +10,8 @@ type Usuario = {
     super: boolean;
 };
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 function formatarCPF(cpf: string) {
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 }
@@ -20,7 +22,7 @@ export function GerenciarUsuarios() {
     useEffect(() => {
         async function fetchUsuarios() {
             try {
-                const response = await fetch("http://localhost:3000/api/usuario/");
+                const response = await fetch(`${backendUrl}/api/usuario/`);
                 if (!response.ok) {
                     throw new Error("Erro ao buscar usuários");
                 }
@@ -55,7 +57,7 @@ export function GerenciarUsuarios() {
             if (result.isConfirmed) { // Se o usuário confirmar a ação
                 try {
                     // Envia uma requisição para atualizar a permissão do usuário no backend
-                    const response = await fetch(`http://localhost:3000/api/usuario/${usuario.id}`, {
+                    const response = await fetch(`${backendUrl}/api/usuario/${usuario.id}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ super: novoValor }) // Atualiza o campo 'super'

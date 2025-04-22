@@ -8,6 +8,8 @@ import withReactContent from "sweetalert2-react-content";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 const MySwal = withReactContent(Swal);
 
 type Categoria = {
@@ -16,17 +18,8 @@ type Categoria = {
 };
 
 export function GerenciarCategorias() {
-    const [categorias, setCategorias] = useState([
-        { id: "1", nome: "Configuração e Acesso" },
-        { id: "2", nome: "Dúvidas Gerais" },
-        { id: "3", nome: "Erros Comuns" }
-    ]);
-
-    useEffect(() => {
-        setCategorias(prev => [...prev]);
-    }, []);
-
-    const [modalAberto, setModalAberto] = useState(false);
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
+    const [modalCriacaoAberto, setModalCriacaoAberto] = useState(false);
     const [novaCategoria, setNovaCategoria] = useState("");
     const [modalEdicaoAberto, setModalEdicaoAberto] = useState(false);
     const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(null);
@@ -35,7 +28,24 @@ export function GerenciarCategorias() {
     useEffect(() => {
         async function fetchCategorias() {
             try {
-                const response = await fetch("http://localhost:3000/api/categoria/");
+                const response = await fetch(`${backendUrl}/api/categoria/`);
+                if (!response.ok) {
+                    throw new Error("Erro ao buscar categorias");
+                }
+                const data = await response.json();
+                setCategorias(data);
+            } catch (error) {
+                console.error("Erro ao carregar categorias:", error);
+            }
+        }
+
+        fetchCategorias();
+    }, []);
+
+    useEffect(() => {
+        async function fetchCategorias() {
+            try {
+                const response = await fetch(`${backendUrl}/api/categoria/`);
                 if (!response.ok) {
                     throw new Error("Erro ao buscar categorias");
                 }
@@ -56,7 +66,7 @@ export function GerenciarCategorias() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/categoria/", {
+            const response = await fetch(`${backendUrl}/api/categoria/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -100,7 +110,7 @@ export function GerenciarCategorias() {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/categoria/${categoriaEditando?.id}`, {
+            const response = await fetch(`${backendUrl}/api/categoria/${categoriaEditando?.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -154,7 +164,7 @@ export function GerenciarCategorias() {
 
     async function removerCategoria(id: number) {
         try {
-            const response = await fetch(`http://localhost:3000/api/categoria/${id}`, {
+            const response = await fetch(`${backendUrl}/api/categoria/${id}`, {
                 method: "DELETE",
             });
 

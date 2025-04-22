@@ -12,6 +12,7 @@ interface MyTokenPayload extends JwtPayload {
   super: boolean;
 }
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -29,7 +30,7 @@ export function Login() {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch(`${backendUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ "cpf": username, "password": password })

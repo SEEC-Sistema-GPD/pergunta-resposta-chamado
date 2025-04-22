@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export function CadastrarNovaResposta() {
     const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ export function CadastrarNovaResposta() {
     useEffect(() => {
         async function fetchCategorias() {
             try {
-                const response = await fetch("http://localhost:3000/api/categoria");
+                const response = await fetch(`${backendUrl}/api/categoria`);
                 const data = await response.json();
                 setCategorias(data);
             } catch (error) {
@@ -65,7 +66,7 @@ export function CadastrarNovaResposta() {
         if (!confirmResult.isConfirmed) return;
 
         try {
-            const response = await fetch("http://localhost:3000/api/respostas", {
+            const response = await fetch(`${backendUrl}/api/respostas`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
