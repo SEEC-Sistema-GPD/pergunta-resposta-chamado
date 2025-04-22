@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { FaTrash, FaPlus } from "react-icons/fa";
@@ -14,6 +14,10 @@ export function GerenciarCategorias() {
         { id: "2", nome: "Dúvidas Gerais" },
         { id: "3", nome: "Erros Comuns" }
     ]);
+
+    useEffect(() => {
+        setCategorias(prev => [...prev]);
+    }, []);
 
     const [modalAberto, setModalAberto] = useState(false);
     const [novaCategoria, setNovaCategoria] = useState("");
@@ -34,7 +38,10 @@ export function GerenciarCategorias() {
             cancelButtonColor: "#3085d6",
             confirmButtonText: "Sim, excluir!",
             cancelButtonText: "Cancelar",
-        }).then((result) => {
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                console.log(`Remover categoria com id: ${id}`);
+            }
         });
     };
 
@@ -51,7 +58,7 @@ export function GerenciarCategorias() {
                                     {categoria.nome}
                                     <div>
                                         <button className="p-1 cursor-pointer"><BsPencilSquare size={18} /></button>
-                                        <button 
+                                        <button
                                             className="p-1 cursor-pointer"
                                             onClick={() => confirmarRemocao(categoria.id)}
                                         >
@@ -64,7 +71,7 @@ export function GerenciarCategorias() {
                     </div>
                 </div>
             </div>
-            <button 
+            <button
                 className="cursor-pointer fixed bottom-16 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700"
                 onClick={abrirModal}
             >
@@ -76,10 +83,10 @@ export function GerenciarCategorias() {
             {modalAberto && (
                 <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 bg-white p-6 rounded-lg shadow-lg w-[30%] border border-gray-300">
                     <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Adicionar Categoria</h2>
-                    <input 
-                        type="text" 
-                        className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]" 
-                        placeholder="Nome da categoria" 
+                    <input
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
+                        placeholder="Nome da categoria"
                         value={novaCategoria}
                         onChange={(e) => setNovaCategoria(e.target.value)}
                     />

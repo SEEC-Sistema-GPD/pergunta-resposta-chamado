@@ -1,4 +1,3 @@
-import React from 'react';
 import { Categoria } from '../types/respostas.types';
 
 interface FiltragemPorCategoriaProps {
