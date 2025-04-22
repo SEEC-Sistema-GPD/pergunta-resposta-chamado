@@ -1,0 +1,17 @@
+services:
+  backend:
+    container_name: sigeduc-chamados-backend
+    build: .
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: always
+    ports:
+      - "3037:3000"
+    working_dir: /usr/src/app
+    command: sh -c "npm run dev"
+    networks:
+      - sigeduc-chamados-network
+
+networks:
+  sigeduc-chamados-network:

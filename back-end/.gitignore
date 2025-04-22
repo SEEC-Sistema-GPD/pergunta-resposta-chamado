@@ -42,3 +42,7 @@ dist-ssr
 
 # Environment variables
 .env
+chamados_respostas_backup.db
+insert_categorias.sql
+insert_respostas.sql
+insert_usuarios.sql

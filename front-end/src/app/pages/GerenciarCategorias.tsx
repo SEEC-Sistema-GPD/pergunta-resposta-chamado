@@ -16,8 +16,17 @@ type Categoria = {
 };
 
 export function GerenciarCategorias() {
-    const [categorias, setCategorias] = useState<Categoria[]>([]);
-    const [modalCriacaoAberto, setModalCriacaoAberto] = useState(false);
+    const [categorias, setCategorias] = useState([
+        { id: "1", nome: "Configuração e Acesso" },
+        { id: "2", nome: "Dúvidas Gerais" },
+        { id: "3", nome: "Erros Comuns" }
+    ]);
+
+    useEffect(() => {
+        setCategorias(prev => [...prev]);
+    }, []);
+
+    const [modalAberto, setModalAberto] = useState(false);
     const [novaCategoria, setNovaCategoria] = useState("");
     const [modalEdicaoAberto, setModalEdicaoAberto] = useState(false);
     const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(null);

@@ -35,7 +35,7 @@
     "react-router-dom": "^7.3.0",
     "react-toastify": "^11.0.5",
     "react-tooltip": "^5.28.0",
-    "sweetalert2": "^11.17.2",
+    "sweetalert2": "^11.6.13",
     "sweetalert2-react-content": "^5.1.0",
     "tailwind-merge": "^3.0.1",
     "tailwindcss": "^4.0.6",
