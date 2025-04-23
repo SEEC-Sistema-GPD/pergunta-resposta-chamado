@@ -1,26 +1,31 @@
+version: "3.8"
+
 services:
   postgres:
     image: postgres:latest
-    container_name: db-sigeduc-chamados-guia
+    container_name: db-sigeduc-chamados
     restart: always
     networks:
       - sigeduc-chamados-network
     ports:
       - "5437:5432"
     environment:
-      POSTGRES_USER: sigeduc_chamados_guia
-      POSTGRES_PASSWORD: 3n2ceehsihd
-      POSTGRES_DB: db-sigeduc-chamados-guia
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "sigeduc_chamados_guia", "-d", "db-sigeduc-chamados-guia"]
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
+  
   backend:
     container_name: sigeduc-chamados-backend
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile  # Specify the Dockerfile if it's not the default one
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -30,12 +35,15 @@ services:
     working_dir: /usr/src/app
     command: sh -c "npm run dev"
     environment:
-      DATABASE_URL: postgresql://sigeduc_chamados_guia:3n2ceehsihd@postgres:5432/db-sigeduc-chamados-guia
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@10.26.0.51:5432/${POSTGRES_DB}
     networks:
       - sigeduc-chamados-network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:3000/health"]  # Assuming there's a health endpoint
 
 volumes:
   postgres_data:
 
 networks:
   sigeduc-chamados-network:
+    driver: bridge
