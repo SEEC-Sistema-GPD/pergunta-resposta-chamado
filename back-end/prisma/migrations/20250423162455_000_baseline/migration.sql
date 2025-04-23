@@ -62,8 +62,5 @@ CREATE UNIQUE INDEX "respostas_id_key" ON "respostas"("id");
 -- CreateIndex
 CREATE UNIQUE INDEX "usuarios_cpf_key" ON "usuarios"("cpf");
 
--- CreateIndex
-CREATE UNIQUE INDEX "usuarios_nome_key" ON "usuarios"("nome");
-
 -- AddForeignKey
 ALTER TABLE "respostas" ADD CONSTRAINT "respostas_categoria_id_fkey" FOREIGN KEY ("categoria_id") REFERENCES "categorias"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,31 +1,11 @@
 version: "3.8"
 
 services:
-  postgres:
-    image: postgres:latest
-    container_name: db-sigeduc-chamados
-    restart: always
-    networks:
-      - sigeduc-chamados-network
-    ports:
-      - "5437:5432"
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-  
   backend:
     container_name: sigeduc-chamados-backend
     build:
       context: .
-      dockerfile: Dockerfile  # Specify the Dockerfile if it's not the default one
+      dockerfile: Dockerfile
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -33,17 +13,14 @@ services:
     ports:
       - "3037:3000"
     working_dir: /usr/src/app
-    command: sh -c "npm run dev"
+    command: sh -c "npx prisma migrate deploy && npm run dev"
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@10.26.0.51:5432/${POSTGRES_DB}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     networks:
       - sigeduc-chamados-network
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:3000/health"]  # Assuming there's a health endpoint
-
-volumes:
-  postgres_data:
+      test: [ "CMD", "curl", "--fail", "http://localhost:3000/health" ]
 
 networks:
   sigeduc-chamados-network:
-    driver: bridge
+    external: true
