@@ -106,44 +106,52 @@ export function Login() {
 
       <div className="flex flex-1 items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
-          <div className="flex justify-center">
-            <img src={minhaImagem} alt="Logo" className="max-w-[350px] h-auto" />
-          </div>
-
-          <div className="flex items-center border border-gray-300 rounded mb-2 px-2">
-            <FaUser className="text-gray-500 mr-2" />
-            <input
-              type="text"
-              placeholder="Usuário"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          <div className="flex items-center border border-gray-300 rounded mb-4 px-2 relative">
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="text-gray-500 mr-2 focus:outline-none"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          <button
-            onClick={handleLogin}
-            className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
           >
-            Entrar
-          </button>
+            <div className="flex justify-center">
+              <img src={minhaImagem} alt="Logo" className="max-w-[350px] h-auto" />
+            </div>
+
+            <div className="flex items-center border border-gray-300 rounded mb-2 px-2">
+              <FaUser className="text-gray-500 mr-2" />
+              <input
+                type="text"
+                placeholder="Usuário"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+
+            <div className="flex items-center border border-gray-300 rounded mb-4 px-2 relative">
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-gray-500 mr-2 focus:outline-none"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="cursor-pointer w-full bg-[#3D4A7B] text-white py-2 rounded hover:bg-[#2C3A60] transition"
+            >
+              Entrar
+            </button>
+          </form>
+
           <p className="mt-4 text-sm text-gray-400">
             As credenciais utilizadas são as mesmas do <strong>login local da SEEC</strong> (LDAP).
           </p>
