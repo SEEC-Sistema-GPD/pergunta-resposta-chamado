@@ -228,6 +228,7 @@ export function GerenciarCategorias() {
                     </div>
                 </div>
             </div>
+
             <button
                 className="cursor-pointer fixed bottom-16 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700"
                 onClick={abrirModalCriacao}
@@ -240,8 +241,13 @@ export function GerenciarCategorias() {
             {/* Modal para Adicionar Categoria */}
             {modalCriacaoAberto && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300">
-
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            adicionarCategoria();
+                        }}
+                        className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300"
+                    >
                         <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Adicionar Categoria</h2>
                         <input
                             type="text"
@@ -251,23 +257,23 @@ export function GerenciarCategorias() {
                             onChange={(e) => setNovaCategoria(e.target.value)}
                         />
                         <div className="flex justify-end gap-2">
-                            <button className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>Cancelar</button>
-                            <button
-                                className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]"
-                                onClick={adicionarCategoria}
-                            >
-                                Adicionar
-                            </button>
+                            <button type="button" className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>Cancelar</button>
+                            <button type="submit" className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">Adicionar</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             )}
 
             {/* Modal para Editar Categoria */}
             {modalEdicaoAberto && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300">
-
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            atualizarCategoria();
+                        }}
+                        className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300"
+                    >
                         <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Editar Categoria</h2>
                         <input
                             type="text"
@@ -276,10 +282,10 @@ export function GerenciarCategorias() {
                             onChange={(e) => setNovoNomeCategoria(e.target.value)}
                         />
                         <div className="flex justify-end gap-2">
-                            <button className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>Cancelar</button>
-                            <button className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]" onClick={atualizarCategoria}>Salvar</button>
+                            <button type="button" className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>Cancelar</button>
+                            <button type="submit" className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">Salvar</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             )}
         </div>
