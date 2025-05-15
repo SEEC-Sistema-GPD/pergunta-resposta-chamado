@@ -21,7 +21,7 @@ export function HomeAdmin() {
                 >
                     <FaMagnifyingGlass className="text-4xl text-[#3D4A7B] mb-2 -scale-x-100" />
                     <h2 className="text-xl font-bold text-[#3D4A7B] mb-2">Visualizar Respostas</h2>
-                    <p className="text-gray-600 text-sm">Consulte as respostas cadastradas para suporte dos chamados.</p>
+                    <p className="text-gray-600 text-sm">Consulte as respostas para suporte dos chamados.</p>
                 </div>
 
                 {/* Card - Cadastrar Resposta */}
