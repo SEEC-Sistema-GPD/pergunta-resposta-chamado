@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { FaTrash, FaPlus } from "react-icons/fa";
-import { BsPencilSquare } from "react-icons/bs";
+import { FaPlus } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { Tooltip } from "react-tooltip";
-import "react-tooltip/dist/react-tooltip.css";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -197,7 +195,8 @@ export function GerenciarCategorias() {
     return (
         <div className="flex flex-col min-w-screen min-h-screen bg-[#c4d2eb77]">
             <Header />
-            <div className="flex items-center justify-center py-6 px-3 md:py-22">
+
+            <div className="relative flex-1 flex items-start justify-center py-6 px-3 md:py-22">
                 <div className="p-4 w-full max-w-4xl">
                     <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Gerenciar Categorias</div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
@@ -207,17 +206,18 @@ export function GerenciarCategorias() {
                                     <li key={categoria.id} className="flex flex-row justify-between gap-2 p-3 items-center">
                                         <span className="font-medium text-gray-800 break-words max-w-[60%]">{categoria.nome}</span>
                                         <div className="flex gap-2">
-                                            <button className="p-1 cursor-pointer" onClick={() => abrirModalEdicao(categoria)} data-tooltip-id="editarCategoria">
-                                                <BsPencilSquare size={18} />
-                                            </button>
-                                            <Tooltip id="editarCategoria" place="top" content="Editar Categoria" />
                                             <button
-                                                className="p-1 cursor-pointer"
-                                                onClick={() => confirmarRemocao(categoria.id)}
-                                                data-tooltip-id="excluirCategoria">
-                                                <FaTrash size={18} color="#df0000" />
+                                                className="cursor-pointer w-20 text-sm px-3 py-1 bg-blue-400 text-white rounded hover:bg-blue-500 transition text-center"
+                                                onClick={() => abrirModalEdicao(categoria)}
+                                            >
+                                                Editar
                                             </button>
-                                            <Tooltip id="excluirCategoria" place="top" content="Excluir Categoria" />
+                                            <button
+                                                className="cursor-pointer w-20 text-sm px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-center"
+                                                onClick={() => confirmarRemocao(categoria.id)}
+                                            >
+                                                Excluir
+                                            </button>
                                         </div>
                                     </li>
                                 ))
@@ -227,15 +227,15 @@ export function GerenciarCategorias() {
                         </ul>
                     </div>
                 </div>
-            </div>
 
-            <button
-                className="cursor-pointer fixed bottom-16 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700"
-                onClick={abrirModalCriacao}
-                data-tooltip-id="adicionarCategoria">
-                <FaPlus size={18} />
-            </button>
-            <Tooltip id="adicionarCategoria" content="Adicionar Categoria" />
+                <button
+                    className="cursor-pointer absolute bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg hover:bg-green-700 transition z-20 flex items-center gap-2"
+                    onClick={abrirModalCriacao}
+                >
+                    <FaPlus size={14} />
+                    Adicionar Categoria
+                </button>
+            </div>
             <Footer />
 
             {/* Modal para Adicionar Categoria */}
@@ -257,8 +257,12 @@ export function GerenciarCategorias() {
                             onChange={(e) => setNovaCategoria(e.target.value)}
                         />
                         <div className="flex justify-end gap-2">
-                            <button type="button" className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>Cancelar</button>
-                            <button type="submit" className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">Adicionar</button>
+                            <button type="button" className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>
+                                Cancelar
+                            </button>
+                            <button type="submit" className="px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">
+                                Adicionar
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -282,12 +286,17 @@ export function GerenciarCategorias() {
                             onChange={(e) => setNovoNomeCategoria(e.target.value)}
                         />
                         <div className="flex justify-end gap-2">
-                            <button type="button" className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>Cancelar</button>
-                            <button type="submit" className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">Salvar</button>
+                            <button type="button" className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>
+                                Cancelar
+                            </button>
+                            <button type="submit" className="px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">
+                                Salvar
+                            </button>
                         </div>
                     </form>
                 </div>
             )}
         </div>
     );
+
 }
