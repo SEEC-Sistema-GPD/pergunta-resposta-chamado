@@ -4,7 +4,7 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { Footer } from '../components/Footer';
-import minhaImagem from '../../assets/brasao-seec.png';
+import minhaImagem from '../../assets/BRASAO-SEEC-semfundo.png';
 
 // Interface do token
 interface MyTokenPayload extends JwtPayload {
@@ -74,7 +74,7 @@ export function Login() {
           switch (decodedUser.perfil) {
             case 'M':
             case 'R':
-              navigate("/home-admin"); // ambos acessam a área administrativa
+              navigate("/home-admin");
               break;
             case 'C':
             default:
@@ -110,7 +110,7 @@ export function Login() {
       </header>
 
       <div className="flex flex-1 items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
+        <div className="bg-white p-8 rounded-lg shadow-md w-90 text-center">
           <form
             onSubmit={(e) => {
               e.preventDefault();
