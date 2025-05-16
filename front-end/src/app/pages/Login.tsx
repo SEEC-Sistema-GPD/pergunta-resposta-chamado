@@ -9,7 +9,8 @@ import minhaImagem from '../../assets/brasao-seec.png';
 // Interface do token
 interface MyTokenPayload extends JwtPayload {
   id: string;
-  super: boolean;
+  cpf: string;
+  perfil: 'C' | 'R' | 'M';
 }
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -41,11 +42,10 @@ export function Login() {
       // Salva token e nome
       localStorage.setItem("token", data.token);
       localStorage.setItem("displayName", data.displayName);
-
-      // Decodifica token e salva ID e super
+      // Decodifica token e salva ID e perfil
       const decodedUser = jwtDecode<MyTokenPayload>(data.token);
       localStorage.setItem("userId", decodedUser.id);
-      localStorage.setItem("isSuper", String(decodedUser.super));
+      localStorage.setItem("perfil", decodedUser.perfil);
 
       const nomeUsuarioCompleto = data.displayName;
       const primeiroNomeUsuario = nomeUsuarioCompleto.split(" ")[0];
@@ -71,10 +71,15 @@ export function Login() {
             },
           });
 
-          if (decodedUser.super) {
-            navigate("/home-admin");
-          } else {
-            navigate("/visualizar-resposta-chamado");
+          switch (decodedUser.perfil) {
+            case 'M':
+            case 'R':
+              navigate("/home-admin"); // ambos acessam a área administrativa
+              break;
+            case 'C':
+            default:
+              navigate("/visualizar-resposta-chamado");
+              break;
           }
         }
       });

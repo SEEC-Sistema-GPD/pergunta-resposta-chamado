@@ -9,14 +9,12 @@ export const Header = () => {
   const location = useLocation();
 
   const nomeUsuario = localStorage.getItem("displayName")?.split(" ")[0] || "";
-  const isSuper = localStorage.getItem("isSuper") === "true";
-
+  const perfil = localStorage.getItem("perfil"); // 'C', 'R' ou 'M'
   const rotaAtual = location.pathname;
 
-  // Esconder botão de voltar
   const deveExibirBotaoVoltar = () => {
-    if (isSuper && rotaAtual === "/home-admin") return false;
-    if (!isSuper && rotaAtual === "/visualizar-resposta-chamado") return false;
+    if ((perfil === 'M' || perfil === 'R') && rotaAtual === "/home-admin") return false;
+    if (perfil === 'C' && rotaAtual === "/visualizar-resposta-chamado") return false;
     return true;
   };
 
@@ -34,8 +32,8 @@ export const Header = () => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
         localStorage.removeItem("displayName");
-        localStorage.removeItem("isSuper");
         localStorage.removeItem("userId");
+        localStorage.removeItem("perfil");
 
         Swal.fire({
           title: "Desconectando...",
@@ -69,7 +67,7 @@ export const Header = () => {
             <TbArrowBackUp />
           </button>
         ) : (
-          <div className="w-[32px]" /> 
+          <div className="w-[32px]" /> // espaço reservado
         )}
 
         <h1 className="text-lg font-medium text-center flex-1">
