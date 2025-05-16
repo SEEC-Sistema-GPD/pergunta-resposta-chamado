@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { useNavigate } from "react-router-dom";
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export function CadastrarNovaResposta() {
@@ -14,8 +16,8 @@ export function CadastrarNovaResposta() {
         passos: "",
     });
 
+    const navigate = useNavigate();
     const [categorias, setCategorias] = useState<{ id: number; nome: string }[]>([]);
-
     const descricaoRef = useRef<HTMLTextAreaElement | null>(null);
     const causaRef = useRef<HTMLTextAreaElement | null>(null);
     const respostaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -74,6 +76,7 @@ export function CadastrarNovaResposta() {
 
             if (response.ok) {
                 await Swal.fire("Sucesso!", "Resposta cadastrada com sucesso!", "success");
+
                 setFormData({
                     titulo: "",
                     descricao: "",
@@ -83,11 +86,23 @@ export function CadastrarNovaResposta() {
                     passos: "",
                 });
 
-                // Resetar altura dos textareas
                 [descricaoRef, causaRef, respostaRef, passosRef].forEach(ref => {
                     if (ref.current) {
                         ref.current.style.height = "auto";
                     }
+                });
+
+                await Swal.fire({
+                    title: "Teleportando...",
+                    text: "Aguarde enquanto você é redirecionado.",
+                    icon: "info",
+                    timer: 2000,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    willClose: () => {
+                        navigate("/visualizar-resposta-chamado");
+                    },
                 });
             } else {
                 throw new Error("Erro ao cadastrar resposta");
