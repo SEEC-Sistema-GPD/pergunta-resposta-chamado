@@ -9,6 +9,7 @@ interface TokenPayload {
   perfil: 'C' | 'R' | 'M';
 }
 
+// Acesso para qualquer usuário autenticado
 export function PrivateRoute({ children }: { children: JSX.Element }) {
   const token = localStorage.getItem("token");
 
@@ -17,10 +18,19 @@ export function PrivateRoute({ children }: { children: JSX.Element }) {
     return <Navigate to="/" replace />;
   }
 
+  try {
+    jwtDecode<TokenPayload>(token); // Apenas valida o token
+  } catch {
+    localStorage.removeItem("token");
+    toast.error("Sessão expirada. Faça login novamente.");
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 }
 
-export function AdminRoute({ children }: { children: JSX.Element }) {
+// Acesso para administradores restritos e master
+export function AdminRestritoRoute({ children }: { children: JSX.Element }) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -31,14 +41,38 @@ export function AdminRoute({ children }: { children: JSX.Element }) {
   try {
     const decodedToken = jwtDecode<TokenPayload>(token);
 
-    // Verifica se é administrador (restrito ou master)
-    if (decodedToken.perfil !== 'M' && decodedToken.perfil !== 'R') {
-      toast.error("Acesso negado. Apenas administradores podem acessar esta página.");
-      return <Navigate to="/" replace />;
+    if (decodedToken.perfil !== 'R' && decodedToken.perfil !== 'M') {
+      toast.error("Acesso negado. Apenas administradores restritos ou master podem acessar.");
+      return <Navigate to="/acesso-negado" replace />;
     }
-
   } catch {
     localStorage.removeItem("token");
+    toast.error("Sessão expirada. Faça login novamente.");
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
+
+// Acesso exclusivo para administradores master
+export function AdminMasterRoute({ children }: { children: JSX.Element }) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    toast.error("Você precisa estar logado para acessar esta página.");
+    return <Navigate to="/" replace />;
+  }
+
+  try {
+    const decodedToken = jwtDecode<TokenPayload>(token);
+
+    if (decodedToken.perfil !== 'M') {
+      toast.error("Acesso negado. Apenas administradores master podem acessar.");
+      return <Navigate to="/acesso-negado" replace />;
+    }
+  } catch {
+    localStorage.removeItem("token");
+    toast.error("Sessão expirada. Faça login novamente.");
     return <Navigate to="/" replace />;
   }
 

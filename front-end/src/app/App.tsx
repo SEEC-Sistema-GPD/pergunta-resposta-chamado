@@ -7,40 +7,55 @@ import { CadastrarNovaResposta } from "./pages/CadastrarNovaResposta";
 import { HomeAdmin } from "./pages/HomeAdmin";
 import { GerenciarCategorias } from "./pages/GerenciarCategorias";
 import { GerenciarUsuarios } from "./pages/GerenciarUsuarios";
-import { PrivateRoute,AdminRoute } from "./components/PrivateRoute";
+import { AcessoNegado } from "./pages/AcessoNegado";
+
+import {
+  PrivateRoute,
+  AdminRestritoRoute,
+  AdminMasterRoute
+} from "./components/PrivateRoute";
 
 function App() {
   return (
     <Router>
-      
-      <ToastContainer />  
+      <ToastContainer />
       <Routes>
         {/* Rota pública */}
         <Route path="/" element={<Login />} />
 
-        {/* Rotas protegidas para usuários normais */}
+        {/* Acesso para qualquer usuário logado */}
         <Route path="/visualizar-resposta-chamado" element={
           <PrivateRoute>
             <VisualizarRespostaChamado />
-          </PrivateRoute>} />
+          </PrivateRoute>
+        } />
 
-        {/* Rotas protegidas para administradores */}
+        {/* Acesso para administradores restritos e master */}
         <Route path="/home-admin" element={
-          <AdminRoute>
+          <AdminRestritoRoute>
             <HomeAdmin />
-          </AdminRoute>} />
+          </AdminRestritoRoute>
+        } />
         <Route path="/cadastrar-nova-resposta" element={
-          <AdminRoute>
+          <AdminRestritoRoute>
             <CadastrarNovaResposta />
-          </AdminRoute>} />
+          </AdminRestritoRoute>
+        } />
+
+        {/* Acesso exclusivo para administradores master */}
         <Route path="/gerenciar-categorias" element={
-          <AdminRoute>
+          <AdminMasterRoute>
             <GerenciarCategorias />
-          </AdminRoute>} />
+          </AdminMasterRoute>
+        } />
         <Route path="/gerenciar-usuarios" element={
-          <AdminRoute>
+          <AdminMasterRoute>
             <GerenciarUsuarios />
-          </AdminRoute>} />
+          </AdminMasterRoute>
+        } />
+
+        {/* Página de acesso negado */}
+        <Route path="/acesso-negado" element={<AcessoNegado />} />
       </Routes>
     </Router>
   );

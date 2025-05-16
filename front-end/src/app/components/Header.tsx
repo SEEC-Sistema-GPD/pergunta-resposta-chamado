@@ -52,7 +52,17 @@ export const Header = () => {
   }
 
   function handleBack() {
-    navigate(-1);
+    const perfil = localStorage.getItem("perfil");
+
+    if (rotaAtual === "/acesso-negado") {
+      if (perfil === "C") {
+        navigate("/visualizar-resposta-chamado");
+      } else {
+        navigate("/home-admin");
+      }
+    } else {
+      navigate(-1);
+    }
   }
 
   return (
@@ -67,7 +77,7 @@ export const Header = () => {
             <TbArrowBackUp />
           </button>
         ) : (
-          <div className="w-[32px]" /> // espaço reservado
+          <div className="w-[32px]" />
         )}
 
         <h1 className="text-lg font-medium text-center flex-1">
