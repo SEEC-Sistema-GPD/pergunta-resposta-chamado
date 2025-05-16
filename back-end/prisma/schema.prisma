@@ -39,12 +39,19 @@ model respostas {
   categorias   categorias @relation(fields: [categoria_id], references: [id])
 }
 
+enum Perfil {
+  C // Usuário comum
+  R // Administrador restrito
+  M // Administrador master
+}
+
 model usuarios {
-  id        Int       @id @default(autoincrement())
-  cpf       String    @unique  
-  nome      String    
-  super     Boolean   @default(false) 
-  
+  id   Int    @id @default(autoincrement())
+  cpf  String @unique
+  nome String
+
+  perfil Perfil @default(C) 
+
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime  @updatedAt

@@ -1,13 +1,15 @@
+export type Perfil = 'C' | 'R' | 'M'; // Usuário Comum, Administrador Restrito, Administrador Master
+
 export type Usuario = {
-    id: number;
-    nome: string;
-    super: boolean;
-    cpf: string;    
-    createdAt: Date;  
-    updatedAt: Date;
-    deletedAt: Date | null;
+  id: number;
+  nome: string;
+  cpf: string;
+  perfil: Perfil;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 };
 
 export type UsuarioRequestDTO = {
-    super: boolean;
+  perfil: Perfil;
 };

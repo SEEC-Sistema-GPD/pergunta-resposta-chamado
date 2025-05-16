@@ -21,35 +21,32 @@ export class UsuariosRepository {
     return usuario;
   }
 
-    async atualizarPermissao(id: number, dto: UsuarioRequestDTO): Promise<Usuario | null> {
-      const usuario = await prisma.usuarios.update({
-        where: {
-          id: id,
-        },
-        data: {
-          super: dto.super,
-        },
-      });
-  
-      return usuario;
-    }
+  async atualizarPermissao(id: number, dto: UsuarioRequestDTO): Promise<Usuario | null> {
+    const usuario = await prisma.usuarios.update({
+      where: {
+        id: id,
+      },
+      data: {
+        perfil: dto.perfil,
+      },
+    });
 
-    async findByCpf(cpf: string): Promise<Usuario | null> {
-      const usuario = await prisma.usuarios.findUnique({
-        where: {
-          cpf: cpf,
-        },
-      });
-      return usuario;
-    }
+    return usuario;
+  }
 
-    async create(cpf: string, nome: string): Promise<Usuario | null> {
-      const usuario = await prisma.usuarios.create({
-        data: {
-          cpf: cpf,
-          nome: nome,          
-        },
-      });
-      return usuario;
-    }
+  async findByCpf(cpf: string): Promise<Usuario | null> {
+    const usuario = await prisma.usuarios.findUnique({
+      where: {
+        cpf: cpf,
+      },
+    });
+    return usuario;
+  }
+
+  async create(data: { cpf: string; nome: string; perfil: 'C' | 'R' | 'M' }): Promise<Usuario | null> {
+    const usuario = await prisma.usuarios.create({
+      data,
+    });
+    return usuario;
+  }
 }

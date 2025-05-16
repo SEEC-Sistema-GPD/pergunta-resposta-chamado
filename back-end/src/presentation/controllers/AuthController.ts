@@ -94,19 +94,18 @@ export class AuthController {
 
                     // Gerar o JWT
                     const token = jwt.sign(
-                      { id: user!.id, cpf: user!.cpf, super: user!.super, },  // Payload: informações que você quer embutir
-                      process.env.JWT_SECRET!,          // Chave secreta para assinar o token
-                      { expiresIn: '1h' }              // Tempo de expiração do token
+                      { id: user!.id, cpf: user!.cpf, perfil: user!.perfil },
+                      process.env.JWT_SECRET!,
+                      { expiresIn: '6h' }              // 6 horas até a expiração do token
                     );
 
-                    // Enviar o token e o nome do usuário na resposta
-                    return res
-                      .status(200)
-                      .json({
-                        message: "Autenticado via LDAP",
-                        token,
-                        displayName,
-                      });
+                    // Enviar o token, o nome do usuário e o perfil como resposta
+                    return res.status(200).json({
+                      message: "Autenticado via LDAP",
+                      token,
+                      displayName,
+                      perfil: user!.perfil,
+                    });
                   }
                 });
               });

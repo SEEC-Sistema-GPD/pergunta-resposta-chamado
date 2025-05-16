@@ -1,37 +1,43 @@
-import { Request, Response, NextFunction } from "express";
+import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 
-// Definimos uma interface para estender o Request e incluir a propriedade 'user'
-export interface AuthenticatedRequest extends Request {
-    user?: any;
+// Tipagem global (relembrando: se você já fez isso, ótimo)
+declare global {
+  namespace Express {
+    interface Request {
+      usuario?: {
+        id: number;
+        cpf: string;
+        perfil: 'C' | 'R' | 'M';
+      };
+    }
+  }
 }
 
-// O middleware recebe a requisição, resposta e a função next, e não retorna nada (void)
-export const authenticateToken = (
-    req: AuthenticatedRequest,
-    res: Response,
-    next: NextFunction
-): void => {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
+export const authenticateToken: RequestHandler = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.split(' ')[1];
 
-    if (!token) {
-        console.log("Token não fornecido.");
-        res.status(404).json({ message: "Token não fornecido." });
-        res.redirect("/");
-        return;
-    }
+  if (!token) {
+    res.status(401).json({ message: "Token não fornecido." });
+    return;
+  }
 
-    jwt.verify(token, process.env.JWT_SECRET!, (err, decoded) => {
-        if (err) {
-            console.log("Token inválido." + token);
-            res.status(403).json({ message: "Token inválido." });
-            res.redirect("/");
-            return;
-        }
-        // Se o token for válido, armazena o payload (decoded) na propriedade 'user' do request.
-        req.user = decoded;
-        // Chama next() para que a execução continue para o próximo middleware ou rota.
-        next();
-    });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+      id: number;
+      cpf: string;
+      perfil: 'C' | 'R' | 'M';
+    };
+
+    req.usuario = {
+      id: decoded.id,
+      cpf: decoded.cpf,
+      perfil: decoded.perfil,
+    };
+
+    next();
+  } catch (err) {
+    res.status(403).json({ message: "Token inválido ou expirado." });
+  }
 };

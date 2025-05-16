@@ -34,33 +34,33 @@ export class UsuariosService {
 
     async atualizarPermissao(id: number, dto: UsuarioRequestDTO) {
         try {
-            let valorBooleano: boolean;
+            // Verifica se o perfil é válido
+            const perfisValidos = ['C', 'R', 'M'] as const;
+            if (!perfisValidos.includes(dto.perfil)) {
+                return { message: "Perfil inválido" };
+            }
 
-            // Verifica o tipo do atributo 'super' no DTO e converte para booleano
-            if (typeof dto.super === "string") {
-                // Se for uma string, considera "1" como true e qualquer outra coisa como false
-                valorBooleano = dto.super === "1";
-            } else if (typeof dto.super === "number") {
-                // Se for um número, considera 1 como true e qualquer outro valor como false
-                valorBooleano = dto.super === 1;
-            } else {
-                // Caso já seja booleano, apenas atribui o valor diretamente
-                valorBooleano = dto.super;
-            }
-            const usuario = await this.UsuariosRepository.atualizarPermissao(id, { super: valorBooleano });
+            const usuario = await this.UsuariosRepository.atualizarPermissao(id, {
+                perfil: dto.perfil
+            });
+
             if (!usuario) {
-                return { message: "Erro ao atualizar permissão do usuário" };
+                return { message: "Erro ao atualizar perfil do usuário" };
             }
+
             return usuario;
-        }
-        catch (error) {
-            console.error("Erro ao atualizar permissão do usuário:", error);
-            return { message: "Erro ao atualizar permissão do usuário" };
+        } catch (error) {
+            console.error("Erro ao atualizar perfil do usuário:", error);
+            return { message: "Erro ao atualizar perfil do usuário" };
         }
     }
 
     async create(cpf: string, nome: string) {
-        const usuario = await this.UsuariosRepository.create(cpf, nome);
+        const usuario = await this.UsuariosRepository.create({
+            cpf,
+            nome,
+            perfil: 'C'
+        });
         if (!usuario) {
             return { message: "Erro ao criar usuário" };
         }

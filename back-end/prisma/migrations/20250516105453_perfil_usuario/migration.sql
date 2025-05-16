@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Perfil" AS ENUM ('C', 'R', 'M');
+
 -- CreateTable
 CREATE TABLE "categorias" (
     "nome" TEXT NOT NULL,
@@ -42,7 +45,7 @@ CREATE TABLE "usuarios" (
     "id" SERIAL NOT NULL,
     "cpf" TEXT NOT NULL,
     "nome" TEXT NOT NULL,
-    "super" BOOLEAN NOT NULL DEFAULT false,
+    "perfil" "Perfil" NOT NULL DEFAULT 'C',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" TIMESTAMP(3),
     "updatedAt" TIMESTAMP(3) NOT NULL,
