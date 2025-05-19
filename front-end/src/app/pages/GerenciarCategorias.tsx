@@ -256,10 +256,10 @@ export function GerenciarCategorias() {
                             onChange={(e) => setNovaCategoria(e.target.value)}
                         />
                         <div className="flex justify-end gap-2">
-                            <button type="button" className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>
+                            <button type="button" className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>
                                 Cancelar
                             </button>
-                            <button type="submit" className="px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">
+                            <button type="submit" className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">
                                 Adicionar
                             </button>
                         </div>
@@ -285,10 +285,10 @@ export function GerenciarCategorias() {
                             onChange={(e) => setNovoNomeCategoria(e.target.value)}
                         />
                         <div className="flex justify-end gap-2">
-                            <button type="button" className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>
+                            <button type="button" className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>
                                 Cancelar
                             </button>
-                            <button type="submit" className="px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">
+                            <button type="submit" className="cursor-pointer px-4 py-2 bg-[#3D4A7B] text-white rounded hover:bg-[#2b365b]">
                                 Salvar
                             </button>
                         </div>
