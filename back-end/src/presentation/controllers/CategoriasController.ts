@@ -73,4 +73,18 @@ export class CategoriaController {
             res.status(500).json({ message: "Erro interno ao excluir categoria" });
         }
     }
+
+    async checkVinculo(req: Request, res: Response) {
+        const { id } = req.params;
+        try {
+            const total = await this.categoriaService.contarVinculos(Number(id));
+            return res.status(200).json({
+                bloqueado: total > 0,
+                vinculadas: total,
+            });
+        } catch (error) {
+            console.error("Erro ao verificar vínculos:", error);
+            return res.status(500).json({ message: "Erro interno ao verificar vínculos" });
+        }
+    }
 }

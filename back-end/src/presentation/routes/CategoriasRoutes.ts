@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { CategoriaController } from "../controllers/CategoriasController.ts";
-import { authenticateToken } from "../../infra/middlewares/authenticateToken.ts";
 
 const categoriaController = new CategoriaController();
 const router = Router();
@@ -23,6 +22,10 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     await categoriaController.delete(req, res);
+});
+
+router.get('/:id/check-vinculo', async (req, res) => {
+    await categoriaController.checkVinculo(req, res);
 });
 
 export default router;

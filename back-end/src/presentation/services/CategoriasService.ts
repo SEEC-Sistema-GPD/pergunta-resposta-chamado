@@ -97,4 +97,8 @@ export class CategoriasService {
             bloqueado: false,
         };
     }
+
+    async contarVinculos(id: number): Promise<number> {
+        return await this.CategoriasRepository.countRespostasVinculadas(id);
+    }
 }
