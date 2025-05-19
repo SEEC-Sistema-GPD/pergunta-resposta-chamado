@@ -142,35 +142,38 @@ export function GerenciarCategorias() {
         }
     }
 
-    const confirmarRemocao = (id: number) => {
-        MySwal.fire({
-            title: "Tem certeza disso?",
-            text: "Você não poderá reverter essa ação!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Excluir",
-            cancelButtonText: "Cancelar",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                removerCategoria(id);
-            }
-        });
-    };
-
     async function removerCategoria(id: number) {
         try {
-            const response = await fetch(`${backendUrl}/api/categoria/${id}`, {
-                method: "DELETE",
-            });
+            // Verifica se a categoria está vinculada a respostas
+            const checkResponse = await fetch(`${backendUrl}/api/categoria/${id}/check-vinculo`);
+            const checkData = await checkResponse.json();
 
-            if (!response.ok) {
-                throw new Error("Erro ao excluir a categoria");
+            let texto = "Você não poderá reverter essa ação!";
+            if (checkData.bloqueado) {
+                texto = `Essa categoria está vinculada a <b>${checkData.vinculadas}</b> resposta(s). Deseja realmente excluir?`;
             }
 
-            setCategorias(categorias.filter(categoria => categoria.id !== id));
+            // Exibe alerta para confirmação
+            const confirmacao = await MySwal.fire({
+                title: "Tem certeza disso?",
+                html: texto,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Excluir",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+            });
 
+            if (!confirmacao.isConfirmed) return;
+
+            // Executa o DELETE
+            const urlFinal = `${backendUrl}/api/categoria/${id}${checkData.bloqueado ? "?forcarExclusao=true" : ""}`;
+            const deleteResponse = await fetch(urlFinal, { method: "DELETE" });
+
+            if (!deleteResponse.ok) throw new Error("Erro ao excluir");
+
+            setCategorias((prev) => prev.filter((cat) => cat.id !== id));
             MySwal.fire("Sucesso!", "Categoria excluída com sucesso!", "success");
 
         } catch (error) {
@@ -213,7 +216,7 @@ export function GerenciarCategorias() {
                                             </button>
                                             <button
                                                 className="cursor-pointer w-20 text-sm px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-center"
-                                                onClick={() => confirmarRemocao(categoria.id)}
+                                                onClick={() => removerCategoria(categoria.id)}
                                             >
                                                 Excluir
                                             </button>
