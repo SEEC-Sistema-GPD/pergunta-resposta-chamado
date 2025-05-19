@@ -71,4 +71,14 @@ export class CategoriasRepository {
 
     return categoria;
   }
+
+  async countRespostasVinculadas(id: number): Promise<number> {
+    const total = await prisma.respostas.count({
+      where: {
+        categoria_id: id,
+      },
+    });
+
+    return total;
+  }
 }

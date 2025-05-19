@@ -30,7 +30,6 @@ export class CategoriaController {
             const categoria = await this.categoriaService.create(req.body);
             res.status(201).json(categoria);
         } catch (error: any) {
-            // Verifica se já existe uma categoria com o nome escolhido
             if (error.status === 409) {
                 return res.status(409).json({ message: error.message });
             }
@@ -47,7 +46,6 @@ export class CategoriaController {
             const categoria = await this.categoriaService.update(Number(id), req.body);
             res.status(200).json(categoria);
         } catch (error: any) {
-            // Verifica se já existe uma categoria com o nome escolhido
             if (error.status === 409) {
                 return res.status(409).json({ message: error.message });
             }
@@ -60,7 +58,19 @@ export class CategoriaController {
 
     async delete(req: Request, res: Response) {
         const { id } = req.params;
-        await this.categoriaService.delete(Number(id));
-        res.status(204).send();
+        const forcarExclusao = req.query.forcarExclusao === "true";
+
+        try {
+            const resultado = await this.categoriaService.delete(Number(id), forcarExclusao);
+
+            if (resultado.bloqueado) {
+                return res.status(200).json(resultado);
+            }
+
+            res.status(200).json({ message: resultado.message });
+        } catch (error) {
+            console.error("Erro ao excluir categoria:", error);
+            res.status(500).json({ message: "Erro interno ao excluir categoria" });
+        }
     }
 }
