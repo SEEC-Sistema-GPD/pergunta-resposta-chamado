@@ -29,44 +29,76 @@ export class CategoriasService {
 
     async create(dto: CategoriaRequestDTO) {
         try {
+            const nomeExistente = await this.CategoriasRepository.findByName(dto.nome);
+
+            if (nomeExistente) {
+                throw { status: 409, message: "Esse nome de categoria já está em uso." };
+            }
+
             const categoria = await this.CategoriasRepository.create(dto);
+
             if (!categoria) {
                 return { message: "Erro ao criar categoria" };
             }
+
             return categoria;
-        }
-        catch (error) {
+        } catch (error: any) {
             console.error("Erro ao criar categoria:", error);
+            if (error.status === 409) {
+                throw error;
+            }
             return { message: "Erro ao criar categoria" };
         }
-
     }
 
     async update(id: number, dto: CategoriaRequestDTO) {
         try {
-            const categoria = await this.CategoriasRepository.update(id, dto);
-            if (!categoria) {
-                return { message: "Erro ao atualizar categoria" };
+            const categoriaAtual = await this.CategoriasRepository.findById(id);
+            if (!categoriaAtual) {
+                return { message: "Categoria não encontrada" };
             }
+
+            if (categoriaAtual.nome.toLowerCase() !== dto.nome.toLowerCase()) {
+                const nomeExistente = await this.CategoriasRepository.findByName(dto.nome);
+                if (nomeExistente) {
+                    throw { status: 409, message: "Esse nome de categoria já está em uso." };
+                }
+            }
+
+            const categoria = await this.CategoriasRepository.update(id, dto);
             return categoria;
-        }
-        catch (error) {
+        } catch (error: any) {
             console.error("Erro ao atualizar categoria:", error);
+            if (error.status === 409) {
+                throw error;
+            }
             return { message: "Erro ao atualizar categoria" };
         }
     }
 
-    async delete(id: number) {
-        try {
-            const categoria = await this.CategoriasRepository.delete(id);
-            if (!categoria) {
-                return { message: "Erro ao deletar categoria" };
-            }
-            return categoria;
+    async delete(id: number, forcarExclusao = false) {
+        const totalRespostas = await this.CategoriasRepository.countRespostasVinculadas(id);
+
+        if (totalRespostas > 0 && !forcarExclusao) {
+            return {
+                message: `Essa categoria está vinculada a ${totalRespostas} resposta(s). Deseja realmente excluir?`,
+                vinculadas: totalRespostas,
+                bloqueado: true,
+            };
         }
-        catch (error) {
-            console.error("Erro ao deletar categoria:", error);
+
+        const categoria = await this.CategoriasRepository.delete(id);
+        if (!categoria) {
             return { message: "Erro ao deletar categoria" };
         }
+
+        return {
+            message: "Categoria excluída com sucesso!",
+            bloqueado: false,
+        };
+    }
+
+    async contarVinculos(id: number): Promise<number> {
+        return await this.CategoriasRepository.countRespostasVinculadas(id);
     }
 }

@@ -4,14 +4,28 @@ import { CategoriaController } from "../controllers/CategoriasController.ts";
 const categoriaController = new CategoriaController();
 const router = Router();
 
-router.get('/', async (req, res) => categoriaController.findAll(req, res));
+router.get('/', async (req, res) => {
+    await categoriaController.findAll(req, res);
+});
 
-router.get('/:id', async (req, res) => categoriaController.findById(req, res));
+router.get('/:id', async (req, res) => {
+    await categoriaController.findById(req, res);
+});
 
-router.post('/', async (req, res) => categoriaController.create(req, res));
+router.post('/', async (req, res) => {
+    await categoriaController.create(req, res);
+});
 
-router.put('/:id', async (req, res) => categoriaController.update(req, res));
+router.put('/:id', async (req, res) => {
+    await categoriaController.update(req, res);
+});
 
-router.delete('/:id', async (req, res) => categoriaController.delete(req, res));
+router.delete('/:id', async (req, res) => {
+    await categoriaController.delete(req, res);
+});
+
+router.get('/:id/check-vinculo', async (req, res) => {
+    await categoriaController.checkVinculo(req, res);
+});
 
 export default router;

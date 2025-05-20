@@ -26,7 +26,7 @@ export class CategoriasRepository {
     const categoria = await prisma.categorias.create({
       data: {
         nome: dto.nome,
-      },
+      }
     });
 
     return categoria;
@@ -56,5 +56,29 @@ export class CategoriasRepository {
     });
 
     return categoria;
+  }
+
+  async findByName(nome: string): Promise<Categoria | null> {
+    const categoria = await prisma.categorias.findFirst({
+      where: {
+        nome: {
+          equals: nome,
+          mode: "insensitive",
+        },
+        deletedAt: null,
+      },
+    });
+
+    return categoria;
+  }
+
+  async countRespostasVinculadas(id: number): Promise<number> {
+    const total = await prisma.respostas.count({
+      where: {
+        categoria_id: id,
+      },
+    });
+
+    return total;
   }
 }

@@ -1,7 +1,11 @@
+version: "3.8"
+
 services:
   backend:
     container_name: sigeduc-chamados-backend
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -9,9 +13,14 @@ services:
     ports:
       - "3037:3000"
     working_dir: /usr/src/app
-    command: sh -c "npm run dev"
+    command: sh -c "npx prisma migrate deploy && npm run dev"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     networks:
       - sigeduc-chamados-network
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:3000/health" ]
 
 networks:
   sigeduc-chamados-network:
+    external: true

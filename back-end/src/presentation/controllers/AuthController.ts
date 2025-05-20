@@ -3,17 +3,23 @@ import ldap from "ldapjs";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import { v4 as uuidv4 } from "uuid"; // Para gerar sessionId
+import { UsuariosService } from "../services/UsuariosService.ts";
 
 dotenv.config();
 
 const prisma = new PrismaClient();
 
 export class AuthController {
+  private usuarioService: UsuariosService;
+
+  constructor() {
+    this.usuarioService = new UsuariosService();
+    this.auth = this.auth.bind(this);
+  }
+
   async auth(req: Request, res: Response) {
-    const { username: cpf, password } = req.body; // Renomeando para cpf
-    console.log("Authenticating user:", req.body);
-    const ldapUsername = `${cpf}@EDUC.GOVRN`; // Usando CPF como username
+    const { cpf: cpf, password: password } = req.body;
+    const ldapUsername = `${cpf}@EDUC.GOVRN`;
 
     const client = ldap.createClient({
       url: process.env.LDAP_URL!,
@@ -31,15 +37,13 @@ export class AuthController {
           client.unbind();
           return res.status(500).send("Falha na conexão com o serviço LDAP");
         } else {
-          console.log("LDAP service bind successful");
-
+          console.log("LDAP service bind successful (bind)");
           const searchFilter = process.env.LDAP_SEARCH_FILTER!.replace(
             "{{cpf}}",
             cpf
           );
           console.log("Search filter:", searchFilter);
-          // Substituindo pelo CPF
-          const searchOptions = {
+          const searchOptions: ldap.SearchOptions = {
             filter: searchFilter,
             scope: "sub",
             attributes: ["dn", "displayName", "mail"], // Inclua 'mail' ou outro atributo único se necessário
@@ -58,6 +62,7 @@ export class AuthController {
 
               let userFound = false;
               let displayName = cpf; // Valor default caso não encontre no LDAP
+              let user;
 
               search.on("searchEntry", async (entry) => {
                 console.log("User found:", entry.dn.toString());
@@ -66,30 +71,16 @@ export class AuthController {
                 displayName =
                   entry.attributes.find((attr) => attr.type === "displayName")
                     ?.values[0] || cpf;
-                const email =
-                  entry.attributes.find((attr) => attr.type === "mail")
-                    ?.values[0] || `${cpf}@educ.govrn`;
+                // const email =
+                //   entry.attributes.find((attr) => attr.type === "mail")
+                //     ?.values[0] || `${cpf}@educ.govrn`;
 
-                // Verificar se o usuário existe na tabela User usando CPF
-                console.log("Verificando se o usuário existe no banco de dados...");
-                const user = await prisma.usuarios.findUnique({ where: { cpf } });
-
+                // Verificar existencia do usuário por CPF, caso não exista, criar o usuário
+                user = await this.usuarioService.findByCpf(cpf);
                 if (!user) {
-                  client.unbind();
-                  return res.status(401).send("Usuário não registrado no sistema.");
+                  user = await this.usuarioService.create(cpf, displayName);
+                  console.log("Usuário criado com sucesso:", user);
                 }
-
-                // Encerrar sessão anterior se o usuário estiver logado
-                //   if (user.logado) {
-                //     // Limpar o sessionId anterior
-                //     await prisma.user.update({
-                //       where: { id: user.id },
-                //       data: { logado: false, sessionId: null },
-                //     });
-                //     console.log(
-                //       `Sessão anterior encerrada para o usuário CPF: ${cpf}`
-                //     );
-                //   }
 
                 // Verificando as credenciais no LDAP
                 client.bind(ldapUsername, password, async (bindErr) => {
@@ -98,35 +89,23 @@ export class AuthController {
                     client.unbind();
                     return res.status(401).send("Credenciais inválidas");
                   } else {
-                    console.log("LDAP user bind successful");
+                    console.log("LDAP user bind successful (auth)");
                     client.unbind();
 
-                    // Gerar um sessionId único
-                    // const sessionId = uuidv4();
+                    // Gerar o JWT
+                    const token = jwt.sign(
+                      { id: user!.id, cpf: user!.cpf, perfil: user!.perfil },
+                      process.env.JWT_SECRET!,
+                      { expiresIn: '6h' }              // 6 horas até a expiração do token
+                    );
 
-                    // Gerar o JWT com sessionId
-                    // const token = jwt.sign(
-                    //   // { id: user.id, role: user.role, sessionId }, // Payload
-                    //   { id: user.id }, // Payload
-                    //   process.env.JWT_SECRET!, // Chave secreta
-                    //   { expiresIn: "1h" } // Tempo de expiração
-                    // );
-
-                    // Atualizar o status do usuário no banco de dados
-                    // await prisma.usuarios.update({
-                    //   where: { id: user.id },
-                    //   data: { logado: true, sessionId },
-                    // });
-
-                    // Enviar o token e o nome do usuário na resposta
-                    return res
-                      .status(200)
-                      .json({
-                        message: "Autenticado",
-                        // token,
-                        displayName,
-                        // sessionId,
-                      });
+                    // Enviar o token, o nome do usuário e o perfil como resposta
+                    return res.status(200).json({
+                      message: "Autenticado via LDAP",
+                      token,
+                      displayName,
+                      perfil: user!.perfil,
+                    });
                   }
                 });
               });

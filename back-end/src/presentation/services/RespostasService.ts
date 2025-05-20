@@ -36,6 +36,24 @@ export class RespostasService {
     }
   }
 
+  async findByTitulo(titulo: string) {
+    const respostas = await this.RespostasRepository.findByTitulo(titulo);
+    if (!respostas) {
+      return { message: "Nenhuma resposta encontrada" };
+    } else {
+      return respostas;
+    }
+  }
+
+  async findByTituloECategoria(titulo: string, categoria_id: number) {
+    const respostas = await this.RespostasRepository.findByTituloECategoria(titulo, categoria_id);
+    if (!respostas) {
+      return { message: "Nenhuma resposta encontrada" };
+    } else {
+      return respostas;
+    }
+  }
+
   async create(dto: RespostaRequestDTO) {
     try {
       const resposta = await this.RespostasRepository.create(dto);

@@ -6,12 +6,11 @@ export type Resposta = {
     resposta: string;
     passos: string;
     categoria_id: number;
-    // recorrente: boolean;
-    
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date | null;
 };
+
 
 export type RespostaRequestDTO = {
     titulo: string;

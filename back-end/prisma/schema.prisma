@@ -3,18 +3,17 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:../chamados_respostas.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model categorias {
-  id        Int         @id @unique @default(autoincrement())
   nome      String      @unique
-  respostas respostas[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime    @default(now())
   deletedAt DateTime?
+  updatedAt DateTime    @updatedAt
+  id        Int         @id @unique @default(autoincrement())
+  respostas respostas[]
 }
 
 model logs {
@@ -27,26 +26,33 @@ model logs {
 }
 
 model respostas {
-  id           Int     @id @unique @default(autoincrement())
   titulo       String
   descricao    String
   causa        String
   resposta     String
   passos       String
-  // recorrente   Boolean
+  createdAt    DateTime   @default(now())
+  deletedAt    DateTime?
+  updatedAt    DateTime   @updatedAt
+  id           Int        @id @unique @default(autoincrement())
   categoria_id Int
+  categorias   categorias @relation(fields: [categoria_id], references: [id])
+}
 
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  deletedAt  DateTime?
-  categorias categorias? @relation(fields: [categoria_id], references: [id])
+enum Perfil {
+  C // Usuário comum
+  R // Administrador restrito
+  M // Administrador master
 }
 
 model usuarios {
-  id  Int    @id @default(autoincrement())
-  cpf String @unique
+  id   Int    @id @default(autoincrement())
+  cpf  String @unique
+  nome String
+
+  perfil Perfil @default(C) 
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  updatedAt DateTime  @updatedAt
 }

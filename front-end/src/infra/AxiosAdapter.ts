@@ -2,6 +2,14 @@ import HttpClient from "./IHttpClient";
 import axios from "axios";
 
 export default class AxiosAdapter implements HttpClient {
+
+  constructor() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
   async get(url: string): Promise<any> {
     const res = await axios.get(url);
     return res.data;
