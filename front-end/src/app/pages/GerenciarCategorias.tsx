@@ -300,5 +300,4 @@ export function GerenciarCategorias() {
             )}
         </div>
     );
-
 }

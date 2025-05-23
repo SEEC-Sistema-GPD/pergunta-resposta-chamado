@@ -7,6 +7,7 @@ import { CadastrarNovaResposta } from "./pages/CadastrarNovaResposta";
 import { HomeAdmin } from "./pages/HomeAdmin";
 import { GerenciarCategorias } from "./pages/GerenciarCategorias";
 import { GerenciarUsuarios } from "./pages/GerenciarUsuarios";
+import { GerenciarRamais } from "./pages/GerenciarRamais";
 import { AcessoNegado } from "./pages/AcessoNegado";
 
 import {
@@ -20,17 +21,14 @@ function App() {
     <Router>
       <ToastContainer />
       <Routes>
-        {/* Rota pública */}
         <Route path="/" element={<Login />} />
 
-        {/* Acesso para qualquer usuário logado */}
         <Route path="/visualizar-resposta-chamado" element={
           <PrivateRoute>
             <VisualizarRespostaChamado />
           </PrivateRoute>
         } />
 
-        {/* Acesso para administradores restritos e master */}
         <Route path="/home-admin" element={
           <AdminRestritoRoute>
             <HomeAdmin />
@@ -42,7 +40,6 @@ function App() {
           </AdminRestritoRoute>
         } />
 
-        {/* Acesso exclusivo para administradores master */}
         <Route path="/gerenciar-categorias" element={
           <AdminMasterRoute>
             <GerenciarCategorias />
@@ -54,8 +51,13 @@ function App() {
           </AdminMasterRoute>
         } />
 
-        {/* Página de acesso negado */}
         <Route path="/acesso-negado" element={<AcessoNegado />} />
+
+        <Route path="/gerenciar-ramais" element={
+          <PrivateRoute>
+            <GerenciarRamais />
+          </PrivateRoute>
+        } />
       </Routes>
     </Router>
   );

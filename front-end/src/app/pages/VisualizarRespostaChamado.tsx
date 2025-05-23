@@ -8,6 +8,8 @@ import { Categoria, Resposta } from '../types/respostas.types';
 import { FiltragemPorCategoria } from '../components/FiltragemPorCategoria';
 import { CardRespostas } from '../components/CardRespostas';
 import { BarraDePesquisa } from '../components/BarraDePesquisa';
+import { useNavigate } from 'react-router-dom';
+import { FaPhoneAlt } from 'react-icons/fa';
 
 export function VisualizarRespostaChamado() {
     const [respostas, setRespostas] = useState<Resposta[]>([]);
@@ -16,6 +18,7 @@ export function VisualizarRespostaChamado() {
     const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
+    const navigate = useNavigate();
     const service = new RespostaService();
 
     useEffect(() => {
@@ -100,6 +103,17 @@ export function VisualizarRespostaChamado() {
                             categorias={categorias}
                             onChange={getRespostasByCategoria}
                         />
+                    </div>
+
+                    {/* Botão de Ramais */}
+                    <div>
+                        <button
+                            onClick={() => navigate('/gerenciar-ramais')}
+                            className="cursor-pointer bg-[#3D4A7B] text-white px-4 py-2 rounded-lg hover:bg-[#2b365b] transition flex items-center gap-2"
+                        >
+                            <FaPhoneAlt className="text-lg" />
+                            Ramais
+                        </button>
                     </div>
                 </div>
 
