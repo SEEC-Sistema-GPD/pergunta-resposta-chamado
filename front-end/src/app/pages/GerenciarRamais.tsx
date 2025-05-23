@@ -127,7 +127,7 @@ export function GerenciarRamais() {
 
     async function removerRamal(id: number) {
         const confirmacao = await MySwal.fire({
-            title: "Tem certeza?",
+            title: "Tem certeza disso?",
             text: "Você não poderá reverter essa ação!",
             icon: "warning",
             showCancelButton: true,
