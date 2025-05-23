@@ -50,8 +50,17 @@ model usuarios {
   cpf  String @unique
   nome String
 
-  perfil Perfil @default(C) 
+  perfil Perfil @default(C)
 
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+model ramais {
+  id        Int       @id @default(autoincrement())
+  setor     String
+  ramal     String    @unique
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime  @updatedAt

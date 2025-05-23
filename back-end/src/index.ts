@@ -4,6 +4,7 @@ import RespostasRoutes from './presentation/routes/RespostasRoutes.js';
 import CategoriaRoutes from './presentation/routes/CategoriasRoutes.ts';
 import UsuarioRoutes from './presentation/routes/UsuariosRoutes.ts';
 import AuthRoutes from './presentation/routes/AuthRoutes.ts';
+import RamaisRoutes from './presentation/routes/RamaisRoutes.ts';
 
 const app = express();
 
@@ -35,6 +36,7 @@ class App {
     app.use('/api/categoria', CategoriaRoutes);
     app.use('/api/usuario', UsuarioRoutes);
     app.use('/api/auth', AuthRoutes);
+    app.use('/api/ramais', RamaisRoutes);
   }
 
   listen() {
