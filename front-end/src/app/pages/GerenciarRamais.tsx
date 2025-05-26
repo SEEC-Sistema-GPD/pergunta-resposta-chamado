@@ -16,39 +16,34 @@ type Ramal = {
 
 export function GerenciarRamais() {
     const [ramais, setRamais] = useState<Ramal[]>([]);
-    const [perfilLogado, setPerfilLogado] = useState<'C' | 'R' | 'M' | null>(null);
-
     const [modalCriacaoAberto, setModalCriacaoAberto] = useState(false);
     const [modalEdicaoAberto, setModalEdicaoAberto] = useState(false);
+    const [ramalEditando, setRamalEditando] = useState<Ramal | null>(null);
+
+    const [setor, setSetor] = useState("");
+    const [ramal, setRamal] = useState("");
 
     const [novoSetor, setNovoSetor] = useState("");
     const [novoRamal, setNovoRamal] = useState("");
 
-    const [ramalEditando, setRamalEditando] = useState<Ramal | null>(null);
-    const [novoSetorEdicao, setNovoSetorEdicao] = useState("");
-    const [novoRamalEdicao, setNovoRamalEdicao] = useState("");
-
     useEffect(() => {
-        const perfilSalvo = localStorage.getItem("perfil") as 'C' | 'R' | 'M' | null;
-        setPerfilLogado(perfilSalvo);
-
-        fetchRamais();
+        carregarRamais();
     }, []);
 
-    async function fetchRamais() {
+    async function carregarRamais() {
         try {
             const response = await fetch(`${backendUrl}/api/ramais/`);
             if (!response.ok) throw new Error("Erro ao buscar ramais");
             const data = await response.json();
-            setRamais(data);
+            setRamais(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("Erro ao carregar ramais:", error);
         }
     }
 
     async function adicionarRamal() {
-        if (!novoSetor.trim() || !novoRamal.trim()) {
-            MySwal.fire("Erro", "Todos os campos são obrigatórios.", "error");
+        if (!setor.trim() || !ramal.trim()) {
+            MySwal.fire("Erro", "Preencha todos os campos.", "error");
             return;
         }
 
@@ -56,24 +51,21 @@ export function GerenciarRamais() {
             const response = await fetch(`${backendUrl}/api/ramais/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ setor: novoSetor, ramal: novoRamal }),
+                body: JSON.stringify({ setor, ramal }),
             });
 
             if (response.status === 409) {
                 const data = await response.json();
-                MySwal.fire("Erro!", data.message || "Esse ramal já está em uso.", "error");
+                MySwal.fire("Erro!", data.message || "Este ramal já está cadastrado.", "error");
                 return;
             }
 
             if (!response.ok) throw new Error("Erro ao adicionar ramal");
 
-            const novoRamalCriado = await response.json();
-            setRamais((prev) => [...prev, novoRamalCriado]);
-
-            setNovoSetor("");
-            setNovoRamal("");
+            await carregarRamais();
+            setSetor("");
+            setRamal("");
             setModalCriacaoAberto(false);
-
             MySwal.fire("Sucesso!", "Ramal adicionado com sucesso!", "success");
         } catch (error) {
             console.error("Erro ao adicionar ramal:", error);
@@ -82,16 +74,8 @@ export function GerenciarRamais() {
     }
 
     async function atualizarRamal() {
-        if (!novoSetorEdicao.trim() || !novoRamalEdicao.trim()) {
-            MySwal.fire("Erro", "Todos os campos são obrigatórios.", "error");
-            return;
-        }
-
-        if (
-            ramalEditando?.setor === novoSetorEdicao &&
-            ramalEditando?.ramal === novoRamalEdicao
-        ) {
-            MySwal.fire("Erro!", "Altere algum dado para atualizar.", "error");
+        if (!novoSetor.trim() || !novoRamal.trim()) {
+            MySwal.fire("Erro", "Preencha todos os campos.", "error");
             return;
         }
 
@@ -99,25 +83,20 @@ export function GerenciarRamais() {
             const response = await fetch(`${backendUrl}/api/ramais/${ramalEditando?.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ setor: novoSetorEdicao, ramal: novoRamalEdicao }),
+                body: JSON.stringify({ setor: novoSetor, ramal: novoRamal }),
             });
 
             if (response.status === 409) {
                 const data = await response.json();
-                MySwal.fire("Erro!", data.message || "Esse ramal já está em uso.", "error");
+                MySwal.fire("Erro!", data.message || "Este ramal já está cadastrado.", "error");
                 return;
             }
 
             if (!response.ok) throw new Error("Erro ao atualizar ramal");
 
-            const atualizado = await response.json();
-            setRamais((prev) =>
-                prev.map((r) => (r.id === atualizado.id ? atualizado : r))
-            );
-
+            await carregarRamais();
             setModalEdicaoAberto(false);
             setRamalEditando(null);
-
             MySwal.fire("Sucesso!", "Ramal atualizado com sucesso!", "success");
         } catch (error) {
             console.error("Erro ao atualizar ramal:", error);
@@ -128,13 +107,13 @@ export function GerenciarRamais() {
     async function removerRamal(id: number) {
         const confirmacao = await MySwal.fire({
             title: "Tem certeza disso?",
-            text: "Você não poderá reverter essa ação!",
+            text: "Você não poderá reverter isso!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Excluir",
-            cancelButtonText: "Cancelar",
             confirmButtonColor: "#d33",
             cancelButtonColor: "#3085d6",
+            confirmButtonText: "Excluir",
+            cancelButtonText: "Cancelar",
         });
 
         if (!confirmacao.isConfirmed) return;
@@ -146,9 +125,8 @@ export function GerenciarRamais() {
 
             if (!response.ok) throw new Error("Erro ao excluir ramal");
 
-            setRamais((prev) => prev.filter((r) => r.id !== id));
-
-            MySwal.fire("Sucesso!", "Ramal excluído com sucesso!", "success");
+            await carregarRamais();
+            MySwal.fire("Excluído!", "O ramal foi excluído.", "success");
         } catch (error) {
             console.error("Erro ao excluir ramal:", error);
             MySwal.fire("Erro", "Não foi possível excluir o ramal.", "error");
@@ -158,14 +136,14 @@ export function GerenciarRamais() {
     const abrirModalCriacao = () => setModalCriacaoAberto(true);
     const fecharModalCriacao = () => {
         setModalCriacaoAberto(false);
-        setNovoSetor("");
-        setNovoRamal("");
+        setSetor("");
+        setRamal("");
     };
 
     const abrirModalEdicao = (ramal: Ramal) => {
         setRamalEditando(ramal);
-        setNovoSetorEdicao(ramal.setor);
-        setNovoRamalEdicao(ramal.ramal);
+        setNovoSetor(ramal.setor);
+        setNovoRamal(ramal.ramal);
         setModalEdicaoAberto(true);
     };
 
@@ -175,61 +153,50 @@ export function GerenciarRamais() {
 
             <div className="relative flex-1 flex items-start justify-center py-6 px-3 md:py-22">
                 <div className="p-4 w-full max-w-4xl">
-                    <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">
-                        Gerenciar Ramais
-                    </div>
+                    <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Gerenciar Ramais</div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
                         <ul className="divide-y divide-gray-300">
                             {ramais.length > 0 ? (
-                                ramais.map((r) => (
-                                    <li
-                                        key={r.id}
-                                        className="flex flex-row justify-between gap-2 p-3 items-center"
-                                    >
-                                        <span className="text-gray-800 break-words max-w-[60%]">
-                                            <span className="font-semibold">{r.setor}</span> - {r.ramal}
-                                        </span>
-                                        {perfilLogado === "M" && (
-                                            <div className="flex gap-2">
-                                                <button
-                                                    className="cursor-pointer w-20 text-sm px-3 py-1 bg-blue-400 text-white rounded hover:bg-blue-500 transition text-center"
-                                                    onClick={() => abrirModalEdicao(r)}
-                                                >
-                                                    Editar
-                                                </button>
-                                                <button
-                                                    className="cursor-pointer w-20 text-sm px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-center"
-                                                    onClick={() => removerRamal(r.id)}
-                                                >
-                                                    Excluir
-                                                </button>
-                                            </div>
-                                        )}
+                                ramais.map((ramal) => (
+                                    <li key={ramal.id} className="flex flex-row justify-between gap-2 p-3 items-center">
+                                        <div className="flex flex-col max-w-[60%]">
+                                            <span className="font-medium text-gray-800">{ramal.setor}</span>
+                                            <span className="text-sm text-gray-500">{ramal.ramal}</span>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button
+                                                className="cursor-pointer w-20 text-sm px-3 py-1 bg-blue-400 text-white rounded hover:bg-blue-500 transition text-center"
+                                                onClick={() => abrirModalEdicao(ramal)}
+                                            >
+                                                Editar
+                                            </button>
+                                            <button
+                                                className="cursor-pointer w-20 text-sm px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-center"
+                                                onClick={() => removerRamal(ramal.id)}
+                                            >
+                                                Excluir
+                                            </button>
+                                        </div>
                                     </li>
                                 ))
                             ) : (
-                                <p className="text-gray-600 text-center">
-                                    Nenhum ramal encontrado.
-                                </p>
+                                <p className="text-gray-600 text-center">Nenhum ramal encontrado.</p>
                             )}
                         </ul>
                     </div>
                 </div>
 
-                {perfilLogado === "M" && (
-                    <button
-                        className="cursor-pointer absolute bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg hover:bg-green-700 transition z-20 flex items-center gap-2"
-                        onClick={abrirModalCriacao}
-                    >
-                        <FaPlus size={14} />
-                        Adicionar Ramal
-                    </button>
-                )}
+                <button
+                    className="cursor-pointer absolute bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg hover:bg-green-700 transition z-20 flex items-center gap-2"
+                    onClick={abrirModalCriacao}
+                >
+                    <FaPlus size={14} />
+                    Adicionar Ramal
+                </button>
             </div>
-
             <Footer />
 
-            {/* Modal para Adicionar */}
+            {/* Modal de Criação */}
             {modalCriacaoAberto && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <form
@@ -239,22 +206,20 @@ export function GerenciarRamais() {
                         }}
                         className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300"
                     >
-                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">
-                            Adicionar Ramal
-                        </h2>
+                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Adicionar Ramal</h2>
                         <input
                             type="text"
-                            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
+                            className="w-full p-2 border border-gray-300 rounded mb-4"
                             placeholder="Setor"
-                            value={novoSetor}
-                            onChange={(e) => setNovoSetor(e.target.value)}
+                            value={setor}
+                            onChange={(e) => setSetor(e.target.value)}
                         />
                         <input
                             type="text"
-                            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
+                            className="w-full p-2 border border-gray-300 rounded mb-4"
                             placeholder="Ramal"
-                            value={novoRamal}
-                            onChange={(e) => setNovoRamal(e.target.value)}
+                            value={ramal}
+                            onChange={(e) => setRamal(e.target.value)}
                         />
                         <div className="flex justify-end gap-2">
                             <button
@@ -275,7 +240,7 @@ export function GerenciarRamais() {
                 </div>
             )}
 
-            {/* Modal para Editar */}
+            {/* Modal de Edição */}
             {modalEdicaoAberto && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <form
@@ -285,22 +250,20 @@ export function GerenciarRamais() {
                         }}
                         className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300"
                     >
-                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">
-                            Editar Ramal
-                        </h2>
+                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Editar Ramal</h2>
                         <input
                             type="text"
-                            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
+                            className="w-full p-2 border border-gray-300 rounded mb-4"
                             placeholder="Setor"
-                            value={novoSetorEdicao}
-                            onChange={(e) => setNovoSetorEdicao(e.target.value)}
+                            value={novoSetor}
+                            onChange={(e) => setNovoSetor(e.target.value)}
                         />
                         <input
                             type="text"
-                            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
+                            className="w-full p-2 border border-gray-300 rounded mb-4"
                             placeholder="Ramal"
-                            value={novoRamalEdicao}
-                            onChange={(e) => setNovoRamalEdicao(e.target.value)}
+                            value={novoRamal}
+                            onChange={(e) => setNovoRamal(e.target.value)}
                         />
                         <div className="flex justify-end gap-2">
                             <button

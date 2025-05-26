@@ -39,23 +39,6 @@ export function GerenciarCategorias() {
         fetchCategorias();
     }, []);
 
-    useEffect(() => {
-        async function fetchCategorias() {
-            try {
-                const response = await fetch(`${backendUrl}/api/categoria/`);
-                if (!response.ok) {
-                    throw new Error("Erro ao buscar categorias");
-                }
-                const data = await response.json();
-                setCategorias(data);
-            } catch (error) {
-                console.error("Erro ao carregar categorias:", error);
-            }
-        }
-
-        fetchCategorias();
-    }, []);
-
     async function adicionarCategoria() {
         if (!novaCategoria.trim()) {
             MySwal.fire("Erro", "O nome da categoria não pode estar vazio.", "error");
