@@ -66,16 +66,16 @@ export function GerenciarRamais() {
             setSetor("");
             setRamal("");
             setModalCriacaoAberto(false);
-            MySwal.fire("Sucesso!", "Ramal adicionado com sucesso!", "success");
+            MySwal.fire("Sucesso!", "O ramal foi adicionado com sucesso!", "success");
         } catch (error) {
             console.error("Erro ao adicionar ramal:", error);
-            MySwal.fire("Erro", "Não foi possível adicionar o ramal.", "error");
+            MySwal.fire("Erro!", "Não foi possível adicionar o ramal.", "error");
         }
     }
 
     async function atualizarRamal() {
         if (!novoSetor.trim() || !novoRamal.trim()) {
-            MySwal.fire("Erro", "Preencha todos os campos.", "error");
+            MySwal.fire("Erro!", "Preencha todos os campos.", "error");
             return;
         }
 
@@ -100,7 +100,7 @@ export function GerenciarRamais() {
             MySwal.fire("Sucesso!", "Ramal atualizado com sucesso!", "success");
         } catch (error) {
             console.error("Erro ao atualizar ramal:", error);
-            MySwal.fire("Erro", "Não foi possível atualizar o ramal.", "error");
+            MySwal.fire("Erro!", "Não foi possível atualizar o ramal.", "error");
         }
     }
 
@@ -126,10 +126,10 @@ export function GerenciarRamais() {
             if (!response.ok) throw new Error("Erro ao excluir ramal");
 
             await carregarRamais();
-            MySwal.fire("Excluído!", "O ramal foi excluído.", "success");
+            MySwal.fire("Sucesso!", "O ramal foi excluído.", "success");
         } catch (error) {
             console.error("Erro ao excluir ramal:", error);
-            MySwal.fire("Erro", "Não foi possível excluir o ramal.", "error");
+            MySwal.fire("Erro!", "Não foi possível excluir o ramal.", "error");
         }
     }
 
