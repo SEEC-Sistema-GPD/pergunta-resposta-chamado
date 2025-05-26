@@ -61,8 +61,8 @@ export function Login() {
             toast: true,
             position: "bottom-end",
             icon: "success",
-            title: `Seja bem-vindo, ${primeiroNomeUsuario}.`,
-            text: "Que bom ter você aqui!",
+            title: `Bem-vindo, ${primeiroNomeUsuario}!`,
+            text: "Que bom ter você aqui.",
             showConfirmButton: false,
             timer: 4000,
             didOpen: (toast) => {
