@@ -21,7 +21,7 @@ export const Header = () => {
   function handleLogout() {
     Swal.fire({
       title: `Deseja encerrar sua sessão${nomeUsuario ? `, ${nomeUsuario}` : ""}?`,
-      text: "Você será redirecionado para a página inicial.",
+      text: "Você será redirecionado para a página inicial!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
