@@ -16,6 +16,10 @@ type Ramal = {
 };
 
 export function GerenciarRamais() {
+    // Verifica se o usuário é Administrador Master
+    const perfil = localStorage.getItem('perfil');
+    const isMaster = perfil === 'M';
+
     // Estados principais
     const [ramais, setRamais] = useState<Ramal[]>([]);
     const [modalCriacaoAberto, setModalCriacaoAberto] = useState(false);
@@ -215,13 +219,15 @@ export function GerenciarRamais() {
                     <option value={50}>50</option>
                     <option value={-1}>Todos</option>
                 </select>
-                <button
-                    className="flex items-center gap-2 cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow-md transition"
-                    onClick={abrirModalCriacao}
-                >
-                    <FaPlus size={14} />
-                    Adicionar Ramal
-                </button>
+                {isMaster && (
+                    <button
+                        className="flex items-center gap-2 cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow-md transition"
+                        onClick={abrirModalCriacao}
+                    >
+                        <FaPlus size={14} />
+                        Adicionar Ramal
+                    </button>
+                )}
             </div>
 
             <div className="relative flex-1 flex items-start justify-center py-6 px-3">
@@ -236,20 +242,22 @@ export function GerenciarRamais() {
                                             <span className="font-medium text-gray-800">{ramal.setor}</span>
                                             <span className="text-sm text-gray-500">{ramal.ramal}</span>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                className="cursor-pointer w-20 text-sm px-3 py-1 bg-blue-400 text-white rounded hover:bg-blue-500 transition text-center"
-                                                onClick={() => abrirModalEdicao(ramal)}
-                                            >
-                                                Editar
-                                            </button>
-                                            <button
-                                                className="cursor-pointer w-20 text-sm px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-center"
-                                                onClick={() => removerRamal(ramal.id)}
-                                            >
-                                                Excluir
-                                            </button>
-                                        </div>
+                                        {isMaster && (
+                                            <div className="flex gap-2">
+                                                <button
+                                                    className="cursor-pointer w-20 text-sm px-3 py-1 bg-blue-400 text-white rounded hover:bg-blue-500 transition text-center"
+                                                    onClick={() => abrirModalEdicao(ramal)}
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    className="cursor-pointer w-20 text-sm px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-center"
+                                                    onClick={() => removerRamal(ramal.id)}
+                                                >
+                                                    Excluir
+                                                </button>
+                                            </div>
+                                        )}
                                     </li>
                                 ))
                             ) : (
