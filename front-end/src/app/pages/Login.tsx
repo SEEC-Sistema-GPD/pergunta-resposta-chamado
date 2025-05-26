@@ -98,13 +98,13 @@ export function Login() {
 
       <header className="w-full bg-[#3D4A7B] text-white flex flex-col">
         <div className="flex justify-between items-center p-2 border-b-4 border-[#D99C44]">
-          <h1 className="text-lg font-medium flex-1 text-center">
-            SEEC - SIGEduc - Sistema Integrado de Gestão da Educação
+          <h1 className="text-lg font-medium text-center flex-1">
+            SIGEduc <span className="font-normal opacity-80 text-sm">- Sistema Integrado de Gestão da Educação</span>
           </h1>
         </div>
         <div className="p-2 bg-[#C4D2EB] flex-1 text-center items-center">
           <p className="text-primary">
-            Perguntas Frequentes para a Equipe de Suporte da SEEC - SIGEduc
+            FAQ - Suporte SEEC/RN
           </p>
         </div>
       </header>
