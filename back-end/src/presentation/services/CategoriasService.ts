@@ -55,7 +55,7 @@ export class CategoriasService {
         try {
             const categoriaAtual = await this.CategoriasRepository.findById(id);
             if (!categoriaAtual) {
-                return { message: "Categoria não encontrada" };
+                throw { status: 404, message: "Categoria não encontrada." };
             }
 
             if (categoriaAtual.nome.toLowerCase() !== dto.nome.toLowerCase()) {

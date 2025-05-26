@@ -30,7 +30,7 @@ export class RamaisService {
     async update(id: number, dto: RamalRequestDTO) {
         const ramalAtual = await this.ramaisRepository.findById(id);
         if (!ramalAtual) {
-            return { message: 'Ramal não encontrado' };
+            throw { status: 404, message: 'Ramal não encontrado.' };
         }
 
         if (ramalAtual.ramal.toLowerCase() !== dto.ramal.toLowerCase()) {
@@ -42,6 +42,7 @@ export class RamaisService {
 
         return await this.ramaisRepository.update(id, dto);
     }
+
 
     async delete(id: number) {
         const ramal = await this.ramaisRepository.delete(id);

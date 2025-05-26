@@ -56,7 +56,7 @@ export function GerenciarRamais() {
 
             if (response.status === 409) {
                 const data = await response.json();
-                MySwal.fire("Erro!", data.message || "Este ramal já está cadastrado.", "error");
+                MySwal.fire("Erro!", data.message || "Esse número de ramal já está cadastrado.", "error");
                 return;
             }
 
@@ -79,6 +79,15 @@ export function GerenciarRamais() {
             return;
         }
 
+        // Verifica se houve alguma alteração antes de enviar
+        if (
+            ramalEditando?.setor.trim().toLowerCase() === novoSetor.trim().toLowerCase() &&
+            ramalEditando?.ramal.trim().toLowerCase() === novoRamal.trim().toLowerCase()
+        ) {
+            MySwal.fire("Erro!", "Altere algum dado antes de salvar.", "error");
+            return;
+        }
+
         try {
             const response = await fetch(`${backendUrl}/api/ramais/${ramalEditando?.id}`, {
                 method: "PUT",
@@ -88,7 +97,7 @@ export function GerenciarRamais() {
 
             if (response.status === 409) {
                 const data = await response.json();
-                MySwal.fire("Erro!", data.message || "Este ramal já está cadastrado.", "error");
+                MySwal.fire("Erro!", data.message || "Esse número de ramal já está cadastrado.", "error");
                 return;
             }
 
@@ -126,7 +135,7 @@ export function GerenciarRamais() {
             if (!response.ok) throw new Error("Erro ao excluir ramal");
 
             await carregarRamais();
-            MySwal.fire("Sucesso!", "O ramal foi excluído.", "success");
+            MySwal.fire("Sucesso!", "O ramal foi excluído com sucesso.", "success");
         } catch (error) {
             console.error("Erro ao excluir ramal:", error);
             MySwal.fire("Erro!", "Não foi possível excluir o ramal.", "error");
@@ -196,7 +205,7 @@ export function GerenciarRamais() {
             </div>
             <Footer />
 
-            {/* Modal de Criação */}
+            {/* Modal para Adicionar Ramal */}
             {modalCriacaoAberto && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <form
@@ -212,7 +221,7 @@ export function GerenciarRamais() {
                             className="w-full p-2 border border-gray-300 rounded mb-4"
                             placeholder="Setor"
                             value={setor}
-                            onChange={(e) => setSetor(e.target.value)}
+                            onChange={(e) => setSetor(e.target.value.toUpperCase())}
                         />
                         <input
                             type="text"
@@ -240,7 +249,7 @@ export function GerenciarRamais() {
                 </div>
             )}
 
-            {/* Modal de Edição */}
+            {/* Modal para Editar Ramal */}
             {modalEdicaoAberto && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <form
@@ -256,7 +265,7 @@ export function GerenciarRamais() {
                             className="w-full p-2 border border-gray-300 rounded mb-4"
                             placeholder="Setor"
                             value={novoSetor}
-                            onChange={(e) => setNovoSetor(e.target.value)}
+                            onChange={(e) => setNovoSetor(e.target.value.toUpperCase())}
                         />
                         <input
                             type="text"

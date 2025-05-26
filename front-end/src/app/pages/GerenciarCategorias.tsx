@@ -54,7 +54,6 @@ export function GerenciarCategorias() {
                 body: JSON.stringify({ nome: novaCategoria }),
             });
 
-            // Verifica se já existe uma categoria com o nome escolhido
             if (response.status === 409) {
                 const data = await response.json();
                 MySwal.fire("Erro!", data.message || "Esse nome de categoria já está em uso.", "error");
@@ -239,7 +238,7 @@ export function GerenciarCategorias() {
                             className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
                             placeholder="Nome da categoria"
                             value={novaCategoria}
-                            onChange={(e) => setNovaCategoria(e.target.value)}
+                            onChange={(e) => setNovaCategoria(e.target.value.toUpperCase())}
                         />
                         <div className="flex justify-end gap-2">
                             <button type="button" className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={fecharModalCriacao}>
@@ -268,7 +267,7 @@ export function GerenciarCategorias() {
                             type="text"
                             className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#3D4A7B]"
                             value={novoNomeCategoria}
-                            onChange={(e) => setNovoNomeCategoria(e.target.value)}
+                            onChange={(e) => setNovoNomeCategoria(e.target.value.toUpperCase())}
                         />
                         <div className="flex justify-end gap-2">
                             <button type="button" className="cursor-pointer px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEdicaoAberto(false)}>

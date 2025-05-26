@@ -49,7 +49,9 @@ export class CategoriaController {
             if (error.status === 409) {
                 return res.status(409).json({ message: error.message });
             }
-
+            if (error.status === 404) {
+                return res.status(404).json({ message: error.message });
+            }
             console.error("Erro ao atualizar categoria:", error);
             res.status(500).json({ message: "Erro interno ao atualizar categoria" });
         }
