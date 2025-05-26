@@ -4,6 +4,7 @@ import { Footer } from "../components/Footer";
 import { FaPlus } from "react-icons/fa";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { BarraDePesquisa } from "../components/BarraDePesquisa";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const MySwal = withReactContent(Swal);
@@ -15,6 +16,7 @@ type Ramal = {
 };
 
 export function GerenciarRamais() {
+    // Estados principais
     const [ramais, setRamais] = useState<Ramal[]>([]);
     const [modalCriacaoAberto, setModalCriacaoAberto] = useState(false);
     const [modalEdicaoAberto, setModalEdicaoAberto] = useState(false);
@@ -26,9 +28,17 @@ export function GerenciarRamais() {
     const [novoSetor, setNovoSetor] = useState("");
     const [novoRamal, setNovoRamal] = useState("");
 
+    const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1); // Página atual
+    const [itensPorPagina, setItensPorPagina] = useState(10); // Quantidade de itens por página
+
     useEffect(() => {
-        carregarRamais();
+        carregarRamais(); // Carrega ramais na inicialização
     }, []);
+
+    useEffect(() => {
+        setCurrentPage(1); // Sempre volta pra página 1 ao buscar
+    }, [search]);
 
     async function carregarRamais() {
         try {
@@ -40,6 +50,34 @@ export function GerenciarRamais() {
             console.error("Erro ao carregar ramais:", error);
         }
     }
+
+    // Filtro aplicado sobre a lista de ramais
+    const ramaisFiltrados = ramais.filter((r) =>
+        r.setor.toLowerCase().includes(search.toLowerCase()) ||
+        r.ramal.toLowerCase().includes(search.toLowerCase())
+    );
+
+    // Cálculo do total de páginas
+    const totalPaginas =
+        itensPorPagina === -1
+            ? 1
+            : Math.max(Math.ceil(ramaisFiltrados.length / itensPorPagina), 1);
+
+    // Índices dos itens na página atual
+    const indexUltimoItem = currentPage * itensPorPagina;
+    const indexPrimeiroItem = indexUltimoItem - itensPorPagina;
+
+    // Itens que serão exibidos na página atual
+    const itensExibidos =
+        itensPorPagina === -1
+            ? ramaisFiltrados
+            : ramaisFiltrados.slice(indexPrimeiroItem, indexUltimoItem);
+
+    // Altera quantidade de itens por página
+    const handleChangeItensPorPagina = (value: number) => {
+        setItensPorPagina(value);
+        setCurrentPage(1);
+    };
 
     async function adicionarRamal() {
         if (!setor.trim() || !ramal.trim()) {
@@ -79,7 +117,6 @@ export function GerenciarRamais() {
             return;
         }
 
-        // Verifica se houve alguma alteração antes de enviar
         if (
             ramalEditando?.setor.trim().toLowerCase() === novoSetor.trim().toLowerCase() &&
             ramalEditando?.ramal.trim().toLowerCase() === novoRamal.trim().toLowerCase()
@@ -160,13 +197,40 @@ export function GerenciarRamais() {
         <div className="flex flex-col min-w-screen min-h-screen bg-[#c4d2eb77]">
             <Header />
 
-            <div className="relative flex-1 flex items-start justify-center py-6 px-3 md:py-22">
+            <div className="flex flex-col md:flex-row md:justify-center items-center gap-3 px-3 mt-8">
+                <div className="w-full md:w-[400px]">
+                    <BarraDePesquisa
+                        value={search}
+                        onChange={setSearch}
+                        placeholder="Pesquisar por setor ou ramal..."
+                    />
+                </div>
+                <select
+                    className="w-full md:w-[150px] border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={itensPorPagina}
+                    onChange={(e) => handleChangeItensPorPagina(parseInt(e.target.value))}
+                >
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={-1}>Todos</option>
+                </select>
+                <button
+                    className="flex items-center gap-2 cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow-md transition"
+                    onClick={abrirModalCriacao}
+                >
+                    <FaPlus size={14} />
+                    Adicionar Ramal
+                </button>
+            </div>
+
+            <div className="relative flex-1 flex items-start justify-center py-6 px-3">
                 <div className="p-4 w-full max-w-4xl">
                     <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Gerenciar Ramais</div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
                         <ul className="divide-y divide-gray-300">
-                            {ramais.length > 0 ? (
-                                ramais.map((ramal) => (
+                            {itensExibidos.length > 0 ? (
+                                itensExibidos.map((ramal) => (
                                     <li key={ramal.id} className="flex flex-row justify-between gap-2 p-3 items-center">
                                         <div className="flex flex-col max-w-[60%]">
                                             <span className="font-medium text-gray-800">{ramal.setor}</span>
@@ -192,17 +256,39 @@ export function GerenciarRamais() {
                                 <p className="text-gray-600 text-center">Nenhum ramal encontrado.</p>
                             )}
                         </ul>
+
+                        {/* Paginação */}
+                        {itensExibidos.length > 0 && (
+                            <div className="flex justify-center gap-4 items-center mt-4">
+                                <button
+                                    disabled={currentPage === 1}
+                                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                                    className={`px-3 py-1 rounded ${currentPage === 1
+                                        ? "bg-gray-300 cursor-not-allowed text-white"
+                                        : "bg-[#3D4A7B] hover:bg-[#2b365b] cursor-pointer text-white"
+                                        }`}
+                                >
+                                    &larr;
+                                </button>
+                                <span>
+                                    Página {currentPage} de {totalPaginas}
+                                </span>
+                                <button
+                                    disabled={currentPage === totalPaginas}
+                                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                                    className={`px-3 py-1 rounded ${currentPage === totalPaginas
+                                        ? "bg-gray-300 cursor-not-allowed text-white"
+                                        : "bg-[#3D4A7B] hover:bg-[#2b365b] cursor-pointer text-white"
+                                        }`}
+                                >
+                                    &rarr;
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
-
-                <button
-                    className="cursor-pointer absolute bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg hover:bg-green-700 transition z-20 flex items-center gap-2"
-                    onClick={abrirModalCriacao}
-                >
-                    <FaPlus size={14} />
-                    Adicionar Ramal
-                </button>
             </div>
+
             <Footer />
 
             {/* Modal para Adicionar Ramal */}
