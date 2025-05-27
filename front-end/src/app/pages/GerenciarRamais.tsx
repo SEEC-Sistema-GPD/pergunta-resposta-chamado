@@ -15,12 +15,19 @@ type Ramal = {
     ramal: string;
 };
 
+// Função para aplicar máscara no formato XXXX-XXXX
+function aplicarMascaraRamal(valor: string) {
+    const numeros = valor.replace(/\D/g, '');
+    const parte1 = numeros.slice(0, 4);
+    const parte2 = numeros.slice(4, 8);
+    return parte2 ? `${parte1}-${parte2}` : parte1;
+}
+
 export function GerenciarRamais() {
     // Verifica se o usuário é Administrador Master
     const perfil = localStorage.getItem('perfil');
     const isMaster = perfil === 'M';
 
-    // Estados principais
     const [ramais, setRamais] = useState<Ramal[]>([]);
     const [modalCriacaoAberto, setModalCriacaoAberto] = useState(false);
     const [modalEdicaoAberto, setModalEdicaoAberto] = useState(false);
@@ -89,6 +96,11 @@ export function GerenciarRamais() {
             return;
         }
 
+        if (ramal.length !== 9) {
+            MySwal.fire("Erro!", "Formato inválido. O ramal deve seguir o padrão XXXX-XXXX.", "error");
+            return;
+        }
+
         try {
             const response = await fetch(`${backendUrl}/api/ramais/`, {
                 method: "POST",
@@ -118,6 +130,11 @@ export function GerenciarRamais() {
     async function atualizarRamal() {
         if (!novoSetor.trim() || !novoRamal.trim()) {
             MySwal.fire("Erro!", "Preencha todos os campos.", "error");
+            return;
+        }
+
+        if (novoRamal.length !== 9) {
+            MySwal.fire("Erro!", "O ramal deve estar no formato XXXX-XXXX.", "error");
             return;
         }
 
@@ -322,7 +339,7 @@ export function GerenciarRamais() {
                             className="w-full p-2 border border-gray-300 rounded mb-4"
                             placeholder="Ramal"
                             value={ramal}
-                            onChange={(e) => setRamal(e.target.value)}
+                            onChange={(e) => setRamal(aplicarMascaraRamal(e.target.value))}
                         />
                         <div className="flex justify-end gap-2">
                             <button
@@ -366,7 +383,7 @@ export function GerenciarRamais() {
                             className="w-full p-2 border border-gray-300 rounded mb-4"
                             placeholder="Ramal"
                             value={novoRamal}
-                            onChange={(e) => setNovoRamal(e.target.value)}
+                            onChange={(e) => setNovoRamal(aplicarMascaraRamal(e.target.value))}
                         />
                         <div className="flex justify-end gap-2">
                             <button
