@@ -193,7 +193,7 @@ export function GerenciarRamais() {
             if (!response.ok) throw new Error("Erro ao excluir ramal");
 
             await carregarRamais();
-            MySwal.fire("Sucesso!", "O ramal foi excluído com sucesso.", "success");
+            MySwal.fire("Sucesso!", "O ramal foi excluído com sucesso!", "success");
         } catch (error) {
             console.error("Erro ao excluir ramal:", error);
             MySwal.fire("Erro!", "Não foi possível excluir o ramal.", "error");
