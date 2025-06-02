@@ -23,7 +23,6 @@ export default class RespostaService {
         }
     }
 
-
     async getRespostaById(id: number) {
         const response = await this.httpCliente.get(`${this.url}/api/respostas/${id}`);
         if (!response) {

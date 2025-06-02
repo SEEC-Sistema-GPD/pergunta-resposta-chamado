@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 
 import { Login } from "./pages/Login";
 import { VisualizarRespostaChamado } from "./pages/VisualizarRespostaChamado";
-import { CadastrarNovaResposta } from "./pages/CadastrarNovaResposta";
+import { CadastrarResposta } from "./pages/CadastrarResposta";
 import { HomeAdmin } from "./pages/HomeAdmin";
 import { GerenciarCategorias } from "./pages/GerenciarCategorias";
 import { GerenciarUsuarios } from "./pages/GerenciarUsuarios";
@@ -36,7 +36,7 @@ function App() {
         } />
         <Route path="/cadastrar-nova-resposta" element={
           <AdminRestritoRoute>
-            <CadastrarNovaResposta />
+            <CadastrarResposta />
           </AdminRestritoRoute>
         } />
 

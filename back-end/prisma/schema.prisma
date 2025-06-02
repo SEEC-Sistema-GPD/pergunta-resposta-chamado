@@ -25,7 +25,19 @@ model logs {
   descricao     String?
 }
 
+model arquivos {
+  id           Int       @id @default(autoincrement())
+  nomeOriginal String
+  nomeSalvo    String
+  url          String
+  tamanho      Int
+  mimetype     String
+  respostaId   Int
+  resposta     respostas @relation(fields: [respostaId], references: [id])
+}
+
 model respostas {
+  id           Int        @id @unique @default(autoincrement())
   titulo       String
   descricao    String
   causa        String
@@ -34,9 +46,9 @@ model respostas {
   createdAt    DateTime   @default(now())
   deletedAt    DateTime?
   updatedAt    DateTime   @updatedAt
-  id           Int        @id @unique @default(autoincrement())
   categoria_id Int
   categorias   categorias @relation(fields: [categoria_id], references: [id])
+  arquivos     arquivos[]
 }
 
 enum Perfil {

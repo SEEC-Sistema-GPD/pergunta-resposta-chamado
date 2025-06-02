@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+
 import RespostasRoutes from './presentation/routes/RespostasRoutes.js';
 import CategoriaRoutes from './presentation/routes/CategoriasRoutes.ts';
 import UsuarioRoutes from './presentation/routes/UsuariosRoutes.ts';
@@ -17,7 +19,6 @@ class App {
   middlewares() {
     app.use(cors({
       origin: (origin, callback) => {
-        // Aceita qualquer porta do localhost ou o IP do frontend
         if (!origin || origin.startsWith('http://localhost:') || origin === 'http://10.26.0.51:5058') {
           callback(null, true);
         } else {
@@ -26,9 +27,10 @@ class App {
       }
     }));
 
-    // Configuração do Express
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
+
+    app.use('/uploads', express.static(path.resolve('uploads')));
   }
 
   routes() {

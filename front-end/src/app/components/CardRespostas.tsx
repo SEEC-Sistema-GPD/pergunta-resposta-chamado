@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Resposta } from '../types/respostas.types';
+import Swal from 'sweetalert2';
 
 interface CardRespostasProps {
     resposta: Resposta;
@@ -9,6 +10,44 @@ interface CardRespostasProps {
 }
 
 export function CardRespostas({ resposta, isExpanded, onToggle, dataFormatada }: CardRespostasProps) {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    function handleDownload(nomeSalvo: string, nomeOriginal: string, event: React.MouseEvent<HTMLAnchorElement>) {
+        event.preventDefault();
+
+        const url = `${backendUrl}/api/respostas/download/${nomeSalvo}`;
+
+        fetch(url)
+            .then(async (response) => {
+                if (!response.ok) throw new Error("Falha no download");
+
+                const blob = await response.blob();
+                const urlBlob = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = urlBlob;
+                link.download = nomeOriginal;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(urlBlob);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    html: `O arquivo <strong>${nomeOriginal}</strong> foi baixado com sucesso.`,
+                    confirmButtonText: 'OK',
+                });
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    html: `Não foi possível baixar o arquivo <strong>${nomeOriginal}</strong>.`,
+                    confirmButtonText: 'OK',
+                });
+            });
+    }
+
     return (
         <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-4 w-full">
             <div
@@ -55,6 +94,26 @@ export function CardRespostas({ resposta, isExpanded, onToggle, dataFormatada }:
                         <h4 className="text-lg font-medium mb-1">Passos para resolução</h4>
                         <p className="whitespace-pre-wrap">{resposta.passos || "Não informados"}</p>
                     </div>
+
+                    {resposta.arquivos && resposta.arquivos.length > 0 && (
+                        <div>
+                            <h4 className="text-lg font-medium mb-1">Anexos</h4>
+                            <ul className="list-disc list-inside text-blue-600 text-sm">
+                                {resposta.arquivos.map((arquivo, index) => (
+                                    <li key={index}>
+                                        <a
+                                            href={`${backendUrl}${arquivo.url}`}
+                                            onClick={(e) => handleDownload(arquivo.nomeSalvo, arquivo.nomeOriginal, e)}
+                                            className="underline hover:text-blue-800"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {arquivo.nomeOriginal}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

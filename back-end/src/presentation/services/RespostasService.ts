@@ -1,8 +1,7 @@
 import { RespostasRepository } from "../repositories/RespostasRepository.ts";
-import { Resposta, RespostaRequestDTO } from "../../domain/types/Resposta.types.ts";
+import { RespostaRequestDTO } from "../../domain/types/Resposta.types.ts";
 
 export class RespostasService {
-
   private RespostasRepository: RespostasRepository;
 
   constructor() {
@@ -54,15 +53,46 @@ export class RespostasService {
     }
   }
 
-  async create(dto: RespostaRequestDTO) {
+  async create(dados: any) {
     try {
-      const resposta = await this.RespostasRepository.create(dto);
+      const arquivos = dados.arquivos as Express.Multer.File[] | undefined;
 
-      if (!resposta) {
+      const {
+        titulo,
+        descricao,
+        causa,
+        resposta,
+        passos,
+        categoria_id
+      } = dados;
+
+      const dto: RespostaRequestDTO = {
+        titulo,
+        descricao,
+        causa,
+        resposta,
+        passos,
+        categoria_id: Number(categoria_id),
+        arquivos: []
+      };
+
+      if (arquivos && arquivos.length > 0) {
+        dto.arquivos = arquivos.map(file => ({
+          nomeOriginal: decodeURIComponent(escape(file.originalname)),
+          nomeSalvo: file.filename,
+          url: `/uploads/${file.filename}`,
+          tamanho: file.size,
+          mimetype: file.mimetype
+        }));
+      }
+
+      const respostaCriada = await this.RespostasRepository.create(dto);
+
+      if (!respostaCriada) {
         return { message: "Erro ao criar resposta" };
       }
 
-      return resposta;
+      return respostaCriada;
     } catch (error) {
       console.error("Erro ao criar resposta:", error);
       return { message: "Erro ao criar resposta" };

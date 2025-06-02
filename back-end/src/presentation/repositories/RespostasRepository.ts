@@ -2,13 +2,12 @@ import { Resposta, RespostaRequestDTO } from "../../domain/types/Resposta.types.
 import { prisma } from "../../infra/database/prisma.ts";
 
 export class RespostasRepository {
-
   async findAll(): Promise<Resposta[]> {
-    const resposta = await prisma.respostas.findMany({
+    return await prisma.respostas.findMany({
       where: {
         deletedAt: null,
         categorias: {
-          deletedAt: null, 
+          deletedAt: null,
         },
       },
       include: {
@@ -18,18 +17,15 @@ export class RespostasRepository {
             nome: true,
           },
         },
+        arquivos: true,
       },
     });
-    return resposta;
   }
 
   async findById(id: number): Promise<Resposta | null> {
-    const resposta = await prisma.respostas.findUnique({
+    return await prisma.respostas.findUnique({
       where: {
-        id: id,
-        categorias: {
-          deletedAt: null,
-        },
+        id,
       },
       include: {
         categorias: {
@@ -38,16 +34,15 @@ export class RespostasRepository {
             nome: true,
           },
         },
-      }
+        arquivos: true,
+      },
     });
-
-    return resposta;
   }
 
   async findByCategoria(categoria_id: number): Promise<Resposta[] | null> {
-    const respostas = await prisma.respostas.findMany({
+    return await prisma.respostas.findMany({
       where: {
-        categoria_id: categoria_id,
+        categoria_id,
         categorias: {
           deletedAt: null,
         },
@@ -59,14 +54,13 @@ export class RespostasRepository {
             nome: true,
           },
         },
-      }
+        arquivos: true,
+      },
     });
-
-    return respostas;
   }
 
   async findByTitulo(titulo: string): Promise<Resposta[] | null> {
-    const respostas = await prisma.respostas.findMany({
+    return await prisma.respostas.findMany({
       where: {
         titulo: {
           contains: titulo,
@@ -78,47 +72,78 @@ export class RespostasRepository {
       },
       include: {
         categorias: true,
+        arquivos: true,
       },
     });
-
-    return respostas;
   }
 
   async findByTituloECategoria(titulo: string, categoria_id: number): Promise<Resposta[]> {
     return await prisma.respostas.findMany({
-        where: {
-            titulo: {
-                contains: titulo,
-                mode: 'insensitive',
-            },
-            categoria_id: categoria_id,
-            categorias: {
-              deletedAt: null,
-            },
+      where: {
+        titulo: {
+          contains: titulo,
+          mode: 'insensitive',
         },
-        include: {
-            categorias: {
-                select: {
-                    id: true,
-                    nome: true,
-                },
-            },
+        categoria_id,
+        categorias: {
+          deletedAt: null,
         },
-    });
-}
-
-  async create(dto: RespostaRequestDTO): Promise<Resposta | null> {
-    console.log(dto);
-    const resposta = await prisma.respostas.create({
-      data: {
-        titulo: dto.titulo,
-        descricao: dto.descricao,
-        causa: dto.causa,
-        resposta: dto.resposta,
-        passos: dto.passos,
-        categoria_id: dto.categoria_id,
+      },
+      include: {
+        categorias: {
+          select: {
+            id: true,
+            nome: true,
+          },
+        },
+        arquivos: true,
       },
     });
-    return resposta;
+  }
+
+  async create(dto: RespostaRequestDTO): Promise<Resposta> {
+    const {
+      titulo,
+      descricao,
+      causa,
+      resposta: conteudoResposta,
+      passos,
+      categoria_id,
+      arquivos,
+    } = dto;
+
+    const categoriaIdConvertido = Number(categoria_id);
+    if (isNaN(categoriaIdConvertido)) {
+      throw new Error("categoria_id inválido");
+    }
+
+    const novaResposta = await prisma.respostas.create({
+      data: {
+        titulo,
+        descricao,
+        causa,
+        resposta: conteudoResposta,
+        passos,
+        categoria_id: categoriaIdConvertido,
+        ...(arquivos && arquivos.length > 0 && {
+          arquivos: {
+            createMany: {
+              data: arquivos.map((arquivo) => ({
+                nomeOriginal: arquivo.nomeOriginal,
+                nomeSalvo: arquivo.nomeSalvo,
+                url: arquivo.url,
+                tamanho: arquivo.tamanho,
+                mimetype: arquivo.mimetype,
+              })),
+            },
+          },
+        }),
+      },
+      include: {
+        arquivos: true,
+      },
+    });
+
+    return novaResposta;
   }
 }

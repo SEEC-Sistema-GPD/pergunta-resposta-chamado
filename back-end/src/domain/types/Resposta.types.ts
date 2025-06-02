@@ -1,3 +1,13 @@
+export type Arquivo = {
+    id: number;
+    nomeOriginal: string;
+    nomeSalvo: string;
+    url: string;
+    tamanho: number;
+    mimetype: string;
+    respostaId: number;
+};
+
 export type Resposta = {
     id: number;
     titulo: string;
@@ -9,8 +19,8 @@ export type Resposta = {
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date | null;
+    arquivos: Arquivo[];
 };
-
 
 export type RespostaRequestDTO = {
     titulo: string;
@@ -19,4 +29,12 @@ export type RespostaRequestDTO = {
     resposta: string;
     passos: string;
     categoria_id: number;
+
+    arquivos?: {
+        nomeOriginal: string;
+        nomeSalvo: string;
+        url: string;
+        tamanho: number;
+        mimetype: string;
+    }[];
 };
