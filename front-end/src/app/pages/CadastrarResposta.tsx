@@ -140,7 +140,7 @@ export function CadastrarResposta() {
                                 <input
                                     type="text"
                                     name="titulo"
-                                    placeholder="Título"
+                                    placeholder="Título da resposta"
                                     value={formData.titulo}
                                     onChange={handleChange}
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D4A7B] focus:border-transparent text-sm"
@@ -171,7 +171,7 @@ export function CadastrarResposta() {
                                 <textarea
                                     ref={descricaoRef}
                                     name="descricao"
-                                    placeholder="Descrição do problema"
+                                    placeholder="Informe a descrição do problema"
                                     value={formData.descricao}
                                     onChange={handleChange}
                                     onInput={(e) => autoResizeTextarea(e.currentTarget)}
@@ -185,22 +185,8 @@ export function CadastrarResposta() {
                                 <textarea
                                     ref={causaRef}
                                     name="causa"
-                                    placeholder="Causa do problema"
+                                    placeholder="Informe a causa do problema"
                                     value={formData.causa}
-                                    onChange={handleChange}
-                                    onInput={(e) => autoResizeTextarea(e.currentTarget)}
-                                    rows={2}
-                                    className="w-full p-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#3D4A7B] focus:border-transparent text-sm"
-                                    required
-                                />
-                            </div>
-
-                            <div>
-                                <textarea
-                                    ref={respostaRef}
-                                    name="resposta"
-                                    placeholder="Resposta padrão"
-                                    value={formData.resposta}
                                     onChange={handleChange}
                                     onInput={(e) => autoResizeTextarea(e.currentTarget)}
                                     rows={2}
@@ -215,6 +201,20 @@ export function CadastrarResposta() {
                                     name="passos"
                                     placeholder="Passos para resolução"
                                     value={formData.passos}
+                                    onChange={handleChange}
+                                    onInput={(e) => autoResizeTextarea(e.currentTarget)}
+                                    rows={2}
+                                    className="w-full p-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#3D4A7B] focus:border-transparent text-sm"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <textarea
+                                    ref={respostaRef}
+                                    name="resposta"
+                                    placeholder="Informe a resposta padrão"
+                                    value={formData.resposta}
                                     onChange={handleChange}
                                     onInput={(e) => autoResizeTextarea(e.currentTarget)}
                                     rows={2}
