@@ -12,9 +12,9 @@ interface Props {
 
 export default function AnexarArquivos({
     onFilesChange,
-    tamanhoMaximoMb = 10,
+    tamanhoMaximoMb = 8,
     tiposAceitos = [".png", ".jpg", ".jpeg", ".pdf", ".doc", ".docx"],
-    maxArquivos = 5,
+    maxArquivos = 10,
 }: Props) {
     const [arquivosAnexados, setArquivosAnexados] = useState<File[]>([])
     const [arrastoAtivo, setArrastoAtivo] = useState(false)
@@ -120,7 +120,7 @@ export default function AnexarArquivos({
                         </button>
                     </p>
                     <p className="text-xs text-gray-500">
-                        Máximo {maxArquivos} arquivos, até {tamanhoMaximoMb}MB cada
+                        {maxArquivos} arquivos, até {tamanhoMaximoMb}MB cada
                     </p>
                     <p className="text-xs text-gray-500 mt-1">Formatos aceitos: {tiposAceitos.join(", ")}</p>
                 </div>
