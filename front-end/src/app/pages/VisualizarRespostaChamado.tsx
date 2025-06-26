@@ -108,11 +108,11 @@ export function VisualizarRespostaChamado() {
                     {/* Botão de Ramais */}
                     <div>
                         <button
-                            onClick={() => navigate('/gerenciar-ramais')}
+                            onClick={() => navigate('/gerenciar-telefones')}
                             className="cursor-pointer bg-[#3D4A7B] text-white px-4 py-2 rounded-lg hover:bg-[#2b365b] transition flex items-center gap-2"
                         >
                             <FaPhoneAlt className="text-lg" />
-                            Ramais
+                            Telefones
                         </button>
                     </div>
                 </div>

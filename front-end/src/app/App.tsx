@@ -53,7 +53,7 @@ function App() {
 
         <Route path="/acesso-negado" element={<AcessoNegado />} />
 
-        <Route path="/gerenciar-ramais" element={
+        <Route path="/gerenciar-telefones" element={
           <PrivateRoute>
             <GerenciarRamais />
           </PrivateRoute>

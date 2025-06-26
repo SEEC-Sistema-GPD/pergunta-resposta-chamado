@@ -58,7 +58,7 @@ export function GerenciarRamais() {
             const data = await response.json();
             setRamais(Array.isArray(data) ? data : []);
         } catch (error) {
-            console.error("Erro ao carregar ramais:", error);
+            console.error("Erro ao carregar telefones:", error);
         }
     }
 
@@ -97,7 +97,7 @@ export function GerenciarRamais() {
         }
 
         if (ramal.length !== 9) {
-            MySwal.fire("Erro!", "Formato inválido. O ramal deve seguir o padrão XXXX-XXXX.", "error");
+            MySwal.fire("Erro!", "Formato inválido. O telefone deve seguir o padrão XXXX-XXXX.", "error");
             return;
         }
 
@@ -110,20 +110,20 @@ export function GerenciarRamais() {
 
             if (response.status === 409) {
                 const data = await response.json();
-                MySwal.fire("Erro!", data.message || "Esse número de ramal já está cadastrado.", "error");
+                MySwal.fire("Erro!", data.message || "Esse número de telefone já está cadastrado.", "error");
                 return;
             }
 
-            if (!response.ok) throw new Error("Erro ao adicionar ramal");
+            if (!response.ok) throw new Error("Erro ao adicionar telefone");
 
             await carregarRamais();
             setSetor("");
             setRamal("");
             setModalCriacaoAberto(false);
-            MySwal.fire("Sucesso!", "O ramal foi adicionado com sucesso!", "success");
+            MySwal.fire("Sucesso!", "O telefone foi adicionado com sucesso!", "success");
         } catch (error) {
-            console.error("Erro ao adicionar ramal:", error);
-            MySwal.fire("Erro!", "Não foi possível adicionar o ramal.", "error");
+            console.error("Erro ao adicionar telefone:", error);
+            MySwal.fire("Erro!", "Não foi possível adicionar o telefone.", "error");
         }
     }
 
@@ -134,7 +134,7 @@ export function GerenciarRamais() {
         }
 
         if (novoRamal.length !== 9) {
-            MySwal.fire("Erro!", "O ramal deve estar no formato XXXX-XXXX.", "error");
+            MySwal.fire("Erro!", "O telefone deve estar no formato XXXX-XXXX.", "error");
             return;
         }
 
@@ -155,19 +155,19 @@ export function GerenciarRamais() {
 
             if (response.status === 409) {
                 const data = await response.json();
-                MySwal.fire("Erro!", data.message || "Esse número de ramal já está cadastrado.", "error");
+                MySwal.fire("Erro!", data.message || "Esse número de telefone já está cadastrado.", "error");
                 return;
             }
 
-            if (!response.ok) throw new Error("Erro ao atualizar ramal");
+            if (!response.ok) throw new Error("Erro ao atualizar telefone");
 
             await carregarRamais();
             setModalEdicaoAberto(false);
             setRamalEditando(null);
-            MySwal.fire("Sucesso!", "Ramal atualizado com sucesso!", "success");
+            MySwal.fire("Sucesso!", "Telefone atualizado com sucesso!", "success");
         } catch (error) {
-            console.error("Erro ao atualizar ramal:", error);
-            MySwal.fire("Erro!", "Não foi possível atualizar o ramal.", "error");
+            console.error("Erro ao atualizar telefone:", error);
+            MySwal.fire("Erro!", "Não foi possível atualizar o telefone.", "error");
         }
     }
 
@@ -190,13 +190,13 @@ export function GerenciarRamais() {
                 method: "DELETE",
             });
 
-            if (!response.ok) throw new Error("Erro ao excluir ramal");
+            if (!response.ok) throw new Error("Erro ao excluir telefone");
 
             await carregarRamais();
-            MySwal.fire("Sucesso!", "O ramal foi excluído com sucesso!", "success");
+            MySwal.fire("Sucesso!", "O telefone foi excluído com sucesso!", "success");
         } catch (error) {
-            console.error("Erro ao excluir ramal:", error);
-            MySwal.fire("Erro!", "Não foi possível excluir o ramal.", "error");
+            console.error("Erro ao excluir telefone:", error);
+            MySwal.fire("Erro!", "Não foi possível excluir o telefone.", "error");
         }
     }
 
@@ -223,7 +223,7 @@ export function GerenciarRamais() {
                     <BarraDePesquisa
                         value={search}
                         onChange={setSearch}
-                        placeholder="Pesquisar por setor ou ramal..."
+                        placeholder="Pesquisar por setor ou telefone..."
                     />
                 </div>
                 <select
@@ -242,14 +242,16 @@ export function GerenciarRamais() {
                         onClick={abrirModalCriacao}
                     >
                         <FaPlus size={14} />
-                        Adicionar Ramal
+                        Adicionar Telefone
                     </button>
                 )}
             </div>
 
             <div className="relative flex-1 flex items-start justify-center py-6 px-3">
                 <div className="p-4 w-full max-w-4xl">
-                    <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">Gerenciar Ramais</div>
+                    <div className="bg-[#3D4A7B] text-white p-4 rounded-t-lg">
+                        {isMaster ? "Gerenciar Telefones" : "Telefones"}
+                    </div>
                     <div className="bg-white shadow-md rounded-b-lg p-4">
                         <ul className="divide-y divide-gray-300">
                             {itensExibidos.length > 0 ? (
@@ -278,7 +280,7 @@ export function GerenciarRamais() {
                                     </li>
                                 ))
                             ) : (
-                                <p className="text-gray-600 text-center">Nenhum ramal encontrado.</p>
+                                <p className="text-gray-600 text-center">Nenhum telefone encontrado.</p>
                             )}
                         </ul>
 
@@ -326,7 +328,7 @@ export function GerenciarRamais() {
                         }}
                         className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300"
                     >
-                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Adicionar Ramal</h2>
+                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Adicionar Telefone</h2>
                         <input
                             type="text"
                             className="w-full p-2 border border-gray-300 rounded mb-4"
@@ -370,7 +372,7 @@ export function GerenciarRamais() {
                         }}
                         className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[30%] border border-gray-300"
                     >
-                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Editar Ramal</h2>
+                        <h2 className="text-lg font-semibold mb-4 text-[#3D4A7B]">Editar Telefone</h2>
                         <input
                             type="text"
                             className="w-full p-2 border border-gray-300 rounded mb-4"

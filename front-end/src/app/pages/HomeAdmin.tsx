@@ -67,20 +67,20 @@ export function HomeAdmin() {
                         </div>
                     )}
 
-                    {/* Gerenciar ou Visualizar Ramais */}
+                    {/* Gerenciar ou Visualizar Telefones */}
                     {(perfil === "M" || perfil === "R") && (
                         <div
                             className="bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition flex flex-col items-center justify-between h-56"
-                            onClick={() => navigate("/gerenciar-ramais")}
+                            onClick={() => navigate("/gerenciar-telefones")}
                         >
                             <FaPhoneAlt className="text-6xl text-[#3D4A7B] mb-2" />
                             <h2 className="text-xl font-bold text-[#3D4A7B]">
-                                {perfil === "M" ? "Gerenciar Ramais" : "Visualizar Ramais"}
+                                {perfil === "M" ? "Gerenciar Telefones" : "Visualizar Telefones"}
                             </h2>
                             <p className="text-gray-600 text-sm">
                                 {perfil === "M"
-                                    ? "Permite gerenciar ramais e suas informações no sistema."
-                                    : "Consulte os ramais cadastrados e seus respectivos setores no sistema."}
+                                    ? "Permite gerenciar os telefones e seus respectivos setores."
+                                    : "Consulte os telefones cadastrados e seus respectivos setores no sistema."}
                             </p>
                         </div>
                     )}

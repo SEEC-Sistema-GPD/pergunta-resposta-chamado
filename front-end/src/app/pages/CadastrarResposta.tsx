@@ -103,8 +103,8 @@ export function CadastrarResposta() {
                     })
 
                 await Swal.fire({
-                    title: "Teleportando...",
-                    text: "Aguarde enquanto você é redirecionado.",
+                    title: "Redirecionando...",
+                    text: "Aguarde enquanto redirecionamos você.",
                     icon: "info",
                     timer: 2000,
                     showConfirmButton: false,
