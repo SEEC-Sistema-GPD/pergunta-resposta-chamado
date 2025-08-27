@@ -1,18 +1,18 @@
 FROM node:22
 
-# Create app directory
+# Criar diretório da aplicação
 WORKDIR /usr/src/app
 
-# Install app dependencies
+# Copiar package.json e instalar dependências
 COPY package*.json ./
 RUN npm install
 
-# Copy app source
+# Copiar todo o restante
 COPY . .
 
-# Generate Prisma client
+# Gerar Prisma Client
 RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD [ "npm", "run", "dev"]
+CMD [ "npm", "run", "start" ]

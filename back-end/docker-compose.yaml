@@ -1,6 +1,21 @@
 version: "3.8"
 
 services:
+  postgres:
+    image: postgres:15
+    container_name: db-sigeduc-chamados
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: senha
+      POSTGRES_DB: sigeduc_chamados
+    ports:
+      - "5437:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - sigeduc-chamados-network
+
   backend:
     container_name: sigeduc-chamados-backend
     build:
@@ -15,12 +30,20 @@ services:
     working_dir: /usr/src/app
     command: sh -c "npx prisma migrate deploy && npm run dev"
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_URL: postgresql://user:senha@postgres:5432/sigeduc_chamados
+    depends_on:
+      - postgres
     networks:
       - sigeduc-chamados-network
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:3000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 networks:
   sigeduc-chamados-network:
     external: true
+
+volumes:
+  db_data:
